@@ -14,12 +14,13 @@ function tokens(block) {
   return out;
 }
 
-const lightBlock = css.slice(css.indexOf(':root {'), css.indexOf('}', css.indexOf(':root {')));
-const darkStart = css.indexOf('[data-theme="dark"] {');
-const darkBlock = css.slice(darkStart, css.indexOf('}', darkStart));
+/* the default theme is the dark one; the light theme is the override */
+const rootBlock = css.slice(css.indexOf(':root {'), css.indexOf('}', css.indexOf(':root {')));
+const lightStart = css.indexOf('[data-theme="light"] {');
+const lightBlock = css.slice(lightStart, css.indexOf('}', lightStart));
 
-const light = tokens(lightBlock);
-const dark = Object.assign({}, light, tokens(darkBlock));
+const dark = tokens(rootBlock);
+const light = Object.assign({}, dark, tokens(lightBlock));
 
 const hex = (c) => {
   const h = c.replace('#', '');

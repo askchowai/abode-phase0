@@ -2,51 +2,66 @@
    Warm-paper canvas, deep emerald accent, gold for verification. */
 
 :root {
-  --ink: #101a14;
-  --ink-2: #33463b;
-  --ink-3: #6b7d72;
-  --line: #e2ded4;
-  --line-2: #efece4;
-  --canvas: #f7f5ef;
-  --surface: #ffffff;
-  --accent: #1c6b48;
-  --accent-2: #145036;
-  --accent-wash: #e8f1ec;
-  --gold: #a97a33;
-  --gold-wash: #f6efe2;
-  --danger: #a63f2b;
-  --up: #1c6b48;
-  --down: #a63f2b;
+  color-scheme: dark;
 
-  --r-sm: 8px;
-  --r: 14px;
-  --r-lg: 22px;
-  --shadow: 0 1px 2px rgba(16, 26, 20, .05), 0 8px 24px -12px rgba(16, 26, 20, .18);
-  --shadow-lg: 0 2px 4px rgba(16, 26, 20, .06), 0 24px 48px -20px rgba(16, 26, 20, .28);
+  /* askchow.ai's palette: navy on navy, electric blue, cyan for anything live */
+  --navy-950: #060d1a;
+  --navy-900: #080f1e;
+  --navy-800: #0a1428;
+  --navy-700: #0e1a34;
+  --navy-600: #1a2540;
+  --navy-500: #1a3058;
 
-  --on-accent: #ffffff;
+  --ink: #ffffff;
+  --ink-2: #c8d8e8;
+  --ink-3: #8fa6bd;
+  --line: #1a3058;
+  --line-2: #0e1a34;
+  --canvas: #060d1a;
+  --surface: #0a1428;
+  --accent: #00d4ff;
+  --accent-2: #7dd3fc;
+  --accent-wash: #0e1a34;
+  --gold: #f7b955;
+  --gold-wash: #1e1a0f;
+  --danger: #ff8080;
+  --up: #00d4ff;
+  --down: #ff8080;
+
+  --on-accent: #041018;
   --on-scrim: #ffffff;
+  --line-hover: #2a3a5a;
+  --accent-press: #7dd3fc;
+  --accent-edge: #1a3058;
+  --gold-edge: #3a3016;
+  --map-bg: #071120;
+  --map-grid: #16243c;
+  --map-lab: #5a6a7a;
+  --danger-wash: #2a1418;
+  --danger-edge: #4a2028;
+  --tip-bg: #e8eaf0;
+  --tip-ink: #060d1a;
+  --tip-ink-2: #4a5a6a;
+  --pending: #c8d8e8;
+  --agent-wash: #0e1a34;
+  --agent-ink: #a0b8ce;
   --paper: #ffffff;
   --paper-ink: #000000;
   --paper-muted: #555555;
-  --line-hover: #cfc9bb;
-  --accent-press: #175b3d;
-  --accent-edge: #bcd6c8;
-  --gold-edge: #e7d6b8;
-  --map-bg: #f2efe6;
-  --map-grid: #ddd8ca;
-  --map-lab: #9b9585;
-  --danger-wash: #fbeeea;
-  --danger-edge: #e6c4ba;
-  --tip-bg: #101a14;
-  --tip-ink: #ffffff;
-  --tip-ink-2: #c9d6cf;
-  --pending: #4a4336;
-  --agent-wash: #eef0f4;
-  --agent-ink: #4b5666;
 
-  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
-  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif;
+  --r-sm: 6px;
+  --r: 10px;
+  --r-lg: 20px;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .5), 0 8px 24px -12px rgba(0, 0, 0, .8);
+  --shadow-lg: 0 2px 6px rgba(0, 0, 0, .6), 0 24px 48px -20px rgba(0, 0, 0, .9);
+  --glow: 0 0 0 1px rgba(0, 212, 255, .18), 0 0 24px -8px rgba(0, 212, 255, .5);
+  --brand: linear-gradient(135deg, #0066ff, #00d4ff);
+  --brand-hover: linear-gradient(135deg, #0a7bff, #4ce1ff);
+  --brand-glow: rgba(0, 212, 255, .16);
+
+  --serif: Inter, -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+  --sans: Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  --mono: "SF Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 * { box-sizing: border-box; }
@@ -65,7 +80,7 @@ body {
 
 a { color: inherit; text-decoration: none; }
 
-h1, h2, h3 { font-family: var(--serif); font-weight: 600; letter-spacing: -.01em; margin: 0; }
+h1, h2, h3 { font-family: var(--serif); font-weight: 650; letter-spacing: -.025em; margin: 0; }
 h1 { font-size: 2.6rem; line-height: 1.1; }
 h2 { font-size: 1.6rem; line-height: 1.2; }
 h3 { font-size: 1.15rem; line-height: 1.3; }
@@ -95,12 +110,12 @@ button { font: inherit; cursor: pointer; }
 .logo { display: flex; align-items: center; gap: 9px; font-family: var(--serif); font-size: 1.32rem; letter-spacing: -.02em; }
 .logo__mark {
   width: 26px; height: 26px; flex: none;
-  background: var(--accent); border-radius: 7px;
-  position: relative;
+  background: var(--brand); border-radius: 7px;
+  position: relative; box-shadow: var(--glow);
 }
 .logo__mark::after {
   content: ""; position: absolute; inset: 0;
-  background: var(--surface);
+  background: var(--canvas);
   clip-path: polygon(50% 26%, 78% 50%, 71% 50%, 71% 74%, 29% 74%, 29% 50%, 22% 50%);
   opacity: .95;
 }
@@ -121,8 +136,8 @@ button { font: inherit; cursor: pointer; }
 }
 .btn:hover { border-color: var(--line-hover); }
 .btn:active { transform: translateY(1px); }
-.btn--primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-.btn--primary:hover { background: var(--accent-press); border-color: var(--accent-press); }
+.btn--primary { background: var(--brand); border-color: transparent; color: var(--on-accent); font-weight: 650; }
+.btn--primary:hover { background: var(--brand-hover); box-shadow: var(--glow); }
 .btn--ghost { background: transparent; }
 .btn--sm { padding: 6px 13px; font-size: .84rem; }
 .btn--wide { width: 100%; }
@@ -144,9 +159,20 @@ label.lbl { display: block; font-size: .8rem; text-transform: uppercase; letter-
 
 /* ---------- hero ---------- */
 
-.hero { padding: 84px 0 68px; text-align: center; }
-.hero h1 { font-size: clamp(2.4rem, 5.4vw, 4rem); }
-.hero h1 em { font-style: italic; color: var(--accent); }
+/* a dark hero with the blue glow behind it, the way askchow.ai opens */
+.hero { padding: 84px 0 68px; text-align: center; position: relative; overflow: hidden; }
+.hero::before {
+  content: ""; position: absolute; inset: -40% 10% auto; height: 420px; pointer-events: none;
+  background: radial-gradient(ellipse at 50% 40%, var(--brand-glow), transparent 62%);
+}
+.hero > * { position: relative; }
+.hero h1 { font-size: clamp(2.2rem, 5.2vw, 3.6rem); letter-spacing: -.035em; }
+.hero h1 em {
+  font-style: normal;
+  background: var(--brand);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
 .hero__sub { max-width: 560px; margin: 18px auto 0; color: var(--ink-2); font-size: 1.08rem; }
 
 .searchbar {
@@ -710,52 +736,60 @@ label.lbl { display: block; font-size: .8rem; text-transform: uppercase; letter-
    gold and danger re-picked so each clears 3:1 on the dark surface and stays
    distinguishable from the others under protan/deutan/tritan simulation. */
 
-[data-theme="dark"] {
-  color-scheme: dark;
+[data-theme="light"] {
+  color-scheme: light;
 
-  --ink: #eaf0ea;
-  --ink-2: #b6c2b8;
-  --ink-3: #8b978c;
-  --line: #2b332c;
-  --line-2: #222925;
-  --canvas: #121611;
-  --surface: #1a1f19;
-  --accent: #56b087;
-  --accent-2: #7cc7a3;
-  --accent-wash: #1c2b23;
-  --gold: #dcb457;
-  --gold-wash: #2a2418;
-  --danger: #e0766a;
-  --up: #56b087;
-  --down: #e0766a;
+  /* the daylight version of the same palette: navy ink, the same electric blue */
+  --ink: #0a1428;
+  --ink-2: #2a3a4a;
+  --ink-3: #56677a;
+  --line: #d9e2ec;
+  --line-2: #eef2f7;
+  --canvas: #f0f4f8;
+  --surface: #ffffff;
+  --accent: #0057e0;
+  --accent-2: #0a3f9e;
+  --accent-wash: #e6f0ff;
+  --gold: #9a6b12;
+  --gold-wash: #fbf3e2;
+  --danger: #c22b2b;
+  --up: #0057e0;
+  --down: #c22b2b;
 
-  --on-accent: #0d130f;
-  --on-scrim: #ffffff;
-  --line-hover: #3c453d;
-  --accent-press: #6bc199;
-  --accent-edge: #2f5a45;
-  --gold-edge: #4a3d22;
-  --map-bg: #171c16;
-  --map-grid: #2c3329;
-  --map-lab: #7b877d;
-  --danger-wash: #2c1e1a;
-  --danger-edge: #4a2f28;
-  --tip-bg: #eaf0ea;
-  --tip-ink: #121611;
-  --tip-ink-2: #4b564e;
-  --pending: #c9bfa4;
-  --agent-wash: #232a33;
-  --agent-ink: #b7c3d4;
+  --on-accent: #ffffff;
+  --line-hover: #b9c8d8;
+  --accent-press: #0047b8;
+  --accent-edge: #b9d3ff;
+  --gold-edge: #e7d6b8;
+  --map-bg: #e8edf2;
+  --map-grid: #d2dce6;
+  --map-lab: #7d8a99;
+  --danger-wash: #fdecec;
+  --danger-edge: #f0c4c4;
+  --tip-bg: #0a1428;
+  --tip-ink: #ffffff;
+  --tip-ink-2: #a0b8ce;
+  --pending: #2a3a4a;
+  --agent-wash: #eef2f7;
+  --agent-ink: #3a4a5a;
 
-  --shadow: 0 1px 2px rgba(0, 0, 0, .5), 0 8px 24px -12px rgba(0, 0, 0, .7);
-  --shadow-lg: 0 2px 4px rgba(0, 0, 0, .55), 0 24px 48px -20px rgba(0, 0, 0, .8);
+  --shadow: 0 1px 2px rgba(10, 20, 40, .06), 0 8px 24px -12px rgba(10, 20, 40, .18);
+  --shadow-lg: 0 2px 4px rgba(10, 20, 40, .08), 0 24px 48px -20px rgba(10, 20, 40, .28);
+  --glow: 0 0 0 1px rgba(0, 87, 224, .16), 0 0 20px -10px rgba(0, 87, 224, .5);
+  --brand: linear-gradient(135deg, #0057e0, #0094d4);
+  --brand-hover: linear-gradient(135deg, #0047b8, #007fbc);
+  --brand-glow: rgba(0, 87, 224, .12);
 }
 
-[data-theme="dark"] .grp-hero,
-[data-theme="dark"] .panel--claim,
-[data-theme="dark"] .panel--owner { background: var(--surface); }
-[data-theme="dark"] .alert.is-unread { background: var(--surface); }
-[data-theme="dark"] .sheet { background: rgba(0, 0, 0, .6); }
+/* the dark theme is the default, so these live in the base rules */
+.grp-hero, .panel--claim, .panel--owner { background: var(--surface); }
+.alert.is-unread { background: var(--surface); }
+.sheet { background: rgba(0, 0, 0, .68); }
+[data-theme="light"] .grp-hero { background: linear-gradient(180deg, var(--accent-wash), var(--canvas)); }
+[data-theme="light"] .panel--claim { background: linear-gradient(180deg, var(--gold-wash), var(--surface)); }
+[data-theme="light"] .panel--owner { background: linear-gradient(180deg, var(--accent-wash), var(--surface)); }
+[data-theme="light"] .alert.is-unread { background: linear-gradient(90deg, var(--accent-wash), var(--surface) 40%); }
+[data-theme="light"] .sheet { background: rgba(10, 20, 40, .42); }
 
 .themetoggle {
   display: inline-flex; align-items: center; justify-content: center;
@@ -1289,3 +1323,21 @@ a.chip { text-decoration: none; }
 /* the compare tray sits over the page, so give the page room to end above it */
 body.has-tray { padding-bottom: 96px; }
 body.has-tray .foot { margin-bottom: 8px; }
+
+/* ---------- askchow surface treatment ---------- */
+/* On navy, a flat panel disappears. A one-pixel light top edge and a very slight
+   lift are what make cards read as objects rather than holes. */
+
+.card, .panel, .alert, .agrow, .modcard, .gcard, .srow, .recent__item, .dm__row, .dm__pane, .worklog, .afford, .reqbox, .tile {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, .035), transparent 60%);
+}
+[data-theme="light"] .card, [data-theme="light"] .panel, [data-theme="light"] .alert,
+[data-theme="light"] .agrow, [data-theme="light"] .modcard, [data-theme="light"] .gcard,
+[data-theme="light"] .srow, [data-theme="light"] .recent__item, [data-theme="light"] .dm__row,
+[data-theme="light"] .dm__pane, [data-theme="light"] .worklog, [data-theme="light"] .afford,
+[data-theme="light"] .reqbox, [data-theme="light"] .tile { background-image: none; }
+
+.card:hover, .tile:hover, .gcard:hover { border-color: var(--accent); box-shadow: var(--glow); }
+.field:focus { outline: none; border-color: var(--accent); box-shadow: var(--glow); }
+.tag--new, .tag--cut { box-shadow: var(--glow); }
+.masthead { background: color-mix(in srgb, var(--canvas) 82%, transparent); }

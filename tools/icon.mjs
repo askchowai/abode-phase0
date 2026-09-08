@@ -16,7 +16,11 @@ const inRounded = (x, y, r) => {
 
 for (let y = 0; y < S; y++) {
   for (let x = 0; x < S; x++) {
-    if (inRounded(x + 0.5, y + 0.5, 40)) set(x, y, 0x1c, 0x6b, 0x48);
+    if (inRounded(x + 0.5, y + 0.5, 40)) {
+      /* a diagonal wash from blue to cyan, the way the brand gradient runs */
+      const t = (x + y) / (S * 2);
+      set(x, y, Math.round(0x00 + t * 0x00), Math.round(0x66 + t * 0x6e), Math.round(0xff * 1));
+    }
   }
 }
 /* the house: a roof triangle over a body, in white */
@@ -24,14 +28,14 @@ const roofApexY = 46, roofBaseY = 96, roofHalf = 52, cx = S / 2;
 for (let y = roofApexY; y <= roofBaseY; y++) {
   const t = (y - roofApexY) / (roofBaseY - roofApexY);
   const half = Math.round(roofHalf * t);
-  for (let x = cx - half; x <= cx + half; x++) set(Math.round(x), y, 255, 255, 255);
+  for (let x = cx - half; x <= cx + half; x++) set(Math.round(x), y, 6, 13, 26);
 }
 for (let y = roofBaseY; y <= 140; y++) {
-  for (let x = cx - 34; x <= cx + 34; x++) set(Math.round(x), y, 255, 255, 255);
+  for (let x = cx - 34; x <= cx + 34; x++) set(Math.round(x), y, 6, 13, 26);
 }
 /* a door punched back out in emerald */
 for (let y = 112; y <= 140; y++) {
-  for (let x = cx - 11; x <= cx + 11; x++) set(Math.round(x), y, 0x1c, 0x6b, 0x48);
+  for (let x = cx - 11; x <= cx + 11; x++) set(Math.round(x), y, 0x00, 0xd4, 0xff);
 }
 
 const raw = Buffer.alloc((S * 4 + 1) * S);

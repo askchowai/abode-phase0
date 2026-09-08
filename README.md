@@ -106,7 +106,7 @@ page load.
 | `saved.html` | Saved listings and followed addresses |
 | `assets/js/data.js` | Mock MLS + social records. Twenty-four addresses, two of them off market — sold years ago, no listing, page and history intact — clustered in Asheville, Detroit and Providence so map search, comparables and groups behave like they would with a real feed — each with history, posts, comments, votes and offers |
 | `assets/js/app.js` | Rendering and all interactions. State persists to `localStorage` |
-| `assets/css/styles.css` | Design system — warm paper canvas, emerald accent, gold for verification, and a dark theme whose colours are re-picked rather than inverted |
+| `assets/css/styles.css` | Design system in askchow.ai's language — navy canvas, electric blue to cyan gradient, Inter and the system stack, dark by default with a daylight theme whose colours are re-picked rather than inverted |
 
 Listing photos are procedurally generated SVG so the repo carries no image
 weight and no licensing questions.

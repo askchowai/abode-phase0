@@ -63,12 +63,15 @@
 
   function art(hue, variant) {
     const v = variant % 4;
-    const sky1 = `hsl(${hue + 14} 32% 90%)`, sky2 = `hsl(${hue} 26% 78%)`;
-    const wall = `hsl(${hue} 16% ${v === 1 ? 96 : 92}%)`;
-    const roof = `hsl(${hue} 26% 30%)`;
-    const dark = `hsl(${hue} 30% 22%)`;
-    const grass = `hsl(${(hue + 70) % 360} 22% 62%)`;
-    const glass = `hsl(${hue + 8} 34% 46%)`;
+    /* every house is drawn in the brand's blues, with just enough variation between
+       them to tell one card from the next */
+    hue = 196 + (hue % 36) - 18;
+    const sky1 = `hsl(${hue + 12} 42% 22%)`, sky2 = `hsl(${hue} 46% 13%)`;
+    const wall = `hsl(${hue} 22% ${v === 1 ? 82 : 74}%)`;
+    const roof = `hsl(${hue} 34% 34%)`;
+    const dark = `hsl(${hue} 40% 20%)`;
+    const grass = `hsl(${(hue + 24) % 360} 30% 30%)`;
+    const glass = `hsl(190 90% 62%)`;
     const gid = 'g' + Math.random().toString(36).slice(2, 8);
 
     const bodies = [
@@ -375,8 +378,8 @@
   /* ---------- theme ---------- */
   /* System preference wins until you say otherwise; after that your choice sticks. */
 
-  const systemDark = () => !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  const themeNow = () => S.theme || (systemDark() ? 'dark' : 'light');
+  /* askchow.ai is dark; so is this by default. The toggle still wins. */
+  const themeNow = () => S.theme || 'dark';
 
   function applyTheme() {
     document.documentElement.setAttribute('data-theme', themeNow());

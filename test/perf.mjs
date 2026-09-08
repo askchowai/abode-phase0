@@ -26,7 +26,8 @@ for (const p of pages) {
   const dom = await JSDOM.fromURL(base + p, {
     runScripts: 'dangerously', resources: 'usable', pretendToBeVisual: true,
   });
-  await new Promise((r) => setTimeout(r, 60));
+  /* long enough for the app's own first paint, short enough that a stall shows up */
+  await new Promise((r) => setTimeout(r, 150));
   const ms = Date.now() - t0;
   const rendered = dom.window.document.querySelectorAll('.masthead .nav a').length > 0;
   const okay = rendered && ms < BUDGET_MS;

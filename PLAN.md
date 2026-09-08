@@ -34,6 +34,9 @@ and no install. Everything real except the data source.
   routes, pending/verified/withdrawn states, and the powers the badge carries —
   owner-badged posts, pin and unpin, report for review. Approval is stubbed; the
   states and the transitions are the part phase 3 has to honour
+- Reskinned to askchow.ai: navy surfaces, the blue-to-cyan brand gradient on the
+  mark and the primary action, Inter and the system stack in place of the serif,
+  the procedural house art moved into the same blues, dark by default
 - Dark theme: every colour is a token, the dark values are chosen for contrast on
   the dark surface and checked for colour-blind separation, follows the system
   preference until you override it
