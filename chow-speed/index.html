@@ -22,13 +22,19 @@
     <span class="team team--them"><b id="score-them">0</b> Rival</span>
   </div>
   <div class="bar__acts">
+    <label class="lbl" for="mode">Mode</label>
+    <select class="btn" id="mode">
+      <option value="soccar">Soccar</option>
+      <option value="heatseeker">Heatseeker</option>
+      <option value="snowday">Snow day</option>
+    </select>
     <button class="btn" id="btn-pause">Pause</button>
     <button class="btn" id="btn-restart">Restart</button>
   </div>
 </header>
 
 <main id="stage" class="stage">
-  <canvas id="field" width="1200" height="760" aria-label="The pitch"></canvas>
+  <canvas id="field" width="8192" height="12000" aria-label="The pitch"></canvas>
 
   <div class="banner" id="banner" hidden>
     <h1 id="banner-text">C.H.O.W. Speed</h1>
@@ -37,7 +43,8 @@
   </div>
 
   <div class="pads">
-    <button class="pad pad--flip" id="btn-flip" aria-label="Flip">Flip</button>
+    <button class="pad pad--drift" id="btn-drift" aria-label="Drift">Drift</button>
+    <button class="pad pad--flip" id="btn-flip" aria-label="Jump and flip">Flip</button>
     <button class="pad pad--boost" id="btn-boost" aria-label="Boost">Boost</button>
   </div>
 </main>
@@ -49,9 +56,11 @@
     <b id="boost-n">34</b>
   </div>
   <div class="gauge gauge--speed"><span class="gauge__label">Speed</span><b id="speedo">0</b><span class="gauge__unit">u/s</span></div>
-  <p class="keys">Keys: <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> drive · <kbd>shift</kbd> boost · <kbd>space</kbd> flip · <kbd>P</kbd> pause</p>
+  <div class="gauge gauge--super"><span class="gauge__label">Status</span><b id="status">—</b></div>
+  <p class="keys">Keys: <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> drive · <kbd>shift</kbd> boost · <kbd>space</kbd> flip · <kbd>L</kbd> drift · <kbd>P</kbd> pause</p>
 </footer>
 
+<script src="assets/rlconst.js"></script>
 <script src="assets/physics.js"></script>
 <script src="assets/game.js"></script>
 </body>

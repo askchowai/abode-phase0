@@ -8,6 +8,13 @@
 
   const S = window.SPEED;
   const A = S.ARENA;
+  const RL = S.RL;
+  /* RL's frame has the origin at the centre spot and +Y up the pitch; the canvas
+     has it top-left and +Y down. One transform, applied once, keeps the rest of
+     this file speaking Rocket League. */
+  const W = A.x * 2, H = (A.y + A.goalDepth) * 2;
+  const toX = (x) => x + A.x;
+  const toY = (y) => (A.y + A.goalDepth) - y;
 
   const canvas = document.getElementById('field');
   /* Somewhere without a canvas — a headless test, a locked-down browser — should
@@ -39,15 +46,17 @@
 
   /* ---------- sizing ---------- */
 
+  let viewScale = 1;
   function fit() {
     if (!ctx) return;
     const box = canvas.parentElement.getBoundingClientRect();
     const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
-    const scale = Math.min(box.width / A.w, box.height / A.h);
-    canvas.style.width = Math.round(A.w * scale) + 'px';
-    canvas.style.height = Math.round(A.h * scale) + 'px';
-    canvas.width = Math.round(A.w * scale * dpr);
-    canvas.height = Math.round(A.h * scale * dpr);
+    const scale = Math.min(box.width / W, box.height / H);
+    viewScale = scale;
+    canvas.style.width = Math.round(W * scale) + 'px';
+    canvas.style.height = Math.round(H * scale) + 'px';
+    canvas.width = Math.round(W * scale * dpr);
+    canvas.height = Math.round(H * scale * dpr);
     ctx.setTransform(scale * dpr, 0, 0, scale * dpr, 0, 0);
   }
   window.addEventListener('resize', fit);
@@ -58,7 +67,8 @@
     ArrowUp: 'up', KeyW: 'up', ArrowDown: 'down', KeyS: 'down',
     ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right',
     ShiftLeft: 'boost', ShiftRight: 'boost', KeyJ: 'boost',
-    Space: 'flip', KeyK: 'flip',
+    Space: 'jump', KeyK: 'jump',
+    KeyL: 'handbrake', AltLeft: 'handbrake',
   };
 
   window.addEventListener('keydown', (e) => {
@@ -76,10 +86,9 @@
 
   function canvasPoint(ev) {
     const box = canvas.getBoundingClientRect();
-    return {
-      x: (ev.clientX - box.left) / box.width * A.w,
-      y: (ev.clientY - box.top) / box.height * A.h,
-    };
+    const px = (ev.clientX - box.left) / box.width * W;
+    const py = (ev.clientY - box.top) / box.height * H;
+    return { x: px - A.x, y: (A.y + A.goalDepth) - py };   /* back into RL's frame */
   }
 
   /* Touch: hold anywhere on the field to drive at that point. It is the only
@@ -108,24 +117,27 @@
 
   const btnBoost = document.getElementById('btn-boost');
   const btnFlip = document.getElementById('btn-flip');
-  let touchBoost = false, touchFlip = false;
+  let touchBoost = false, touchJump = false, touchDrift = false;
   const hold = (el, set) => {
     ['touchstart', 'mousedown'].forEach((e) => el.addEventListener(e, (ev) => { ev.preventDefault(); set(true); }, { passive: false }));
     ['touchend', 'touchcancel', 'mouseup', 'mouseleave'].forEach((e) => el.addEventListener(e, () => set(false)));
   };
+  const btnDrift = document.getElementById('btn-drift');
   hold(btnBoost, (v) => { touchBoost = v; });
-  hold(btnFlip, (v) => { touchFlip = v; });
+  hold(btnFlip, (v) => { touchJump = v; });
+  if (btnDrift) hold(btnDrift, (v) => { touchDrift = v; });
 
   function readInput() {
     const car = world.cars[0];
-    input.throttle = 0; input.steer = 0; input.boost = false; input.flip = false;
+    input.throttle = 0; input.steer = 0; input.boost = false; input.jump = false; input.handbrake = false;
 
     if (keys.up) input.throttle += 1;
     if (keys.down) input.throttle -= 1;
     if (keys.left) input.steer -= 1;
     if (keys.right) input.steer += 1;
     if (keys.boost) input.boost = true;
-    if (keys.flip) { input.flip = true; keys.flip = false; }
+    if (keys.handbrake) input.handbrake = true;
+    if (keys.jump) { input.jump = true; keys.jump = false; }
 
     if (pointer) {
       const dx = pointer.x - car.x, dy = pointer.y - car.y;
@@ -135,11 +147,12 @@
       while (diff < -Math.PI) diff += Math.PI * 2;
       input.steer = Math.max(-1, Math.min(1, diff * 2.4));
       /* reverse out if the target is behind you and close */
-      input.throttle = (Math.abs(diff) > 2.3 && dist < 220) ? -1 : (dist > 26 ? 1 : 0);
+      input.throttle = (Math.abs(diff) > 2.3 && dist < 1200) ? -1 : (dist > 120 ? 1 : 0);
     }
 
     if (touchBoost) input.boost = true;
-    if (touchFlip) { input.flip = true; touchFlip = false; }
+    if (touchDrift) input.handbrake = true;
+    if (touchJump) { input.jump = true; touchJump = false; }
     return input;
   }
 
@@ -173,6 +186,13 @@
   function onEvents(ev) {
     ev.touches.forEach((t) => {
       if (t.power > 260) { shake = Math.min(14, shake + t.power / 90); beep(t.power); }
+    });
+    ev.demos.forEach((d) => {
+      shake = 18;
+      chord(d.by === 0);
+      banner(d.by === 0 ? 'Demolished them' : 'You were demolished',
+        d.by === 0 ? 'Three seconds without a rival.' : 'Back in three seconds.', null);
+      setTimeout(hideBanner, 900);
     });
     if (ev.goal !== null) {
       shake = 16;
@@ -227,8 +247,7 @@
       ctx.translate((Math.random() - 0.5) * shake, (Math.random() - 0.5) * shake);
       shake *= 0.86;
     }
-    ctx.clearRect(-20, -20, A.w + 40, A.h + 40);
-
+    ctx.clearRect(0, 0, W, H);
     field();
     world.pads.forEach(pad);
     trailPush(ball);
@@ -250,50 +269,66 @@
   }
 
   function field() {
-    const g = ctx.createLinearGradient(0, 0, A.w, A.h);
+    const g = ctx.createLinearGradient(0, 0, W, H);
     g.addColorStop(0, css('--field-1'));
     g.addColorStop(1, css('--field-2'));
     ctx.fillStyle = g;
-    ctx.fillRect(0, 0, A.w, A.h);
+    ctx.fillRect(0, 0, W, H);
 
+    /* the pitch proper, with the nets drawn outside it */
     ctx.strokeStyle = css('--line');
-    ctx.lineWidth = 2;
-    ctx.strokeRect(1, 1, A.w - 2, A.h - 2);
+    ctx.lineWidth = 14;
+    ctx.strokeRect(toX(-A.x), toY(A.y), A.x * 2, A.y * 2);
+
+    ctx.lineWidth = 8;
     ctx.beginPath();
-    ctx.moveTo(A.w / 2, 0); ctx.lineTo(A.w / 2, A.h);
+    ctx.moveTo(toX(-A.x), toY(0)); ctx.lineTo(toX(A.x), toY(0));
     ctx.stroke();
     ctx.beginPath();
-    ctx.arc(A.w / 2, A.h / 2, 110, 0, Math.PI * 2);
+    ctx.arc(toX(0), toY(0), 900, 0, Math.PI * 2);
     ctx.stroke();
 
-    [0, 1].forEach((side) => {
-      const x = side ? A.w : 0;
-      const dir = side ? 1 : -1;
-      ctx.fillStyle = side ? css('--them-wash') : css('--us-wash');
-      ctx.fillRect(side ? A.w - 120 : 0, A.h / 2 - A.goalW / 2, 120, A.goalW);
-      ctx.strokeStyle = side ? css('--them') : css('--us');
-      ctx.lineWidth = 5;
+    /* the corners of a Rocket League pitch are cut; suggest that with arcs */
+    ctx.globalAlpha = 0.5;
+    [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([sx, sy]) => {
       ctx.beginPath();
-      ctx.moveTo(x, A.h / 2 - A.goalW / 2);
-      ctx.lineTo(x + dir * A.goalDepth * 0.6, A.h / 2 - A.goalW / 2);
-      ctx.lineTo(x + dir * A.goalDepth * 0.6, A.h / 2 + A.goalW / 2);
-      ctx.lineTo(x, A.h / 2 + A.goalW / 2);
+      ctx.arc(toX(sx * A.x), toY(sy * A.y), 1150, 0, Math.PI * 2);
+      ctx.stroke();
+    });
+    ctx.globalAlpha = 1;
+
+    [0, 1].forEach((team) => {
+      const y = team === 0 ? -A.y : A.y;          /* team 0 defends the bottom */
+      const dir = team === 0 ? -1 : 1;
+      const colour = team === 0 ? css('--us') : css('--them');
+      ctx.fillStyle = team === 0 ? css('--us-wash') : css('--them-wash');
+      ctx.beginPath();
+      ctx.rect(toX(-A.goalHalf), toY(y + dir * A.goalDepth), A.goalHalf * 2, A.goalDepth);
+      ctx.fill();
+      ctx.strokeStyle = colour;
+      ctx.lineWidth = 22;
+      ctx.beginPath();
+      ctx.moveTo(toX(-A.goalHalf), toY(y));
+      ctx.lineTo(toX(-A.goalHalf), toY(y + dir * A.goalDepth));
+      ctx.lineTo(toX(A.goalHalf), toY(y + dir * A.goalDepth));
+      ctx.lineTo(toX(A.goalHalf), toY(y));
       ctx.stroke();
     });
   }
 
   function pad(p) {
-    ctx.globalAlpha = p.live ? 1 : 0.18;
+    const r = p.big ? 100 : 62;
+    ctx.globalAlpha = p.live ? 1 : 0.16;
     ctx.fillStyle = p.big ? css('--boost') : css('--boost-dim');
     ctx.beginPath();
-    ctx.arc(p.x, p.y, p.big ? 15 : 9, 0, Math.PI * 2);
+    ctx.arc(toX(p.x), toY(p.y), r, 0, Math.PI * 2);
     ctx.fill();
     if (p.live && p.big) {
       ctx.strokeStyle = css('--boost');
       ctx.globalAlpha = 0.35;
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 10;
       ctx.beginPath();
-      ctx.arc(p.x, p.y, 24 + Math.sin(world.t * 4) * 3, 0, Math.PI * 2);
+      ctx.arc(toX(p.x), toY(p.y), r + 60 + Math.sin(world.t * 4) * 14, 0, Math.PI * 2);
       ctx.stroke();
     }
     ctx.globalAlpha = 1;
@@ -301,72 +336,66 @@
 
   function trailPush(ball) {
     trail.push({ x: ball.x, y: ball.y });
-    if (trail.length > 22) trail.shift();
+    if (trail.length > 20) trail.shift();
   }
   function drawTrail() {
+    const heat = world.mode === 'heatseeker';
     trail.forEach((p, i) => {
-      ctx.globalAlpha = (i / trail.length) * 0.25;
-      ctx.fillStyle = css('--ball');
+      ctx.globalAlpha = (i / trail.length) * (heat ? 0.4 : 0.2);
+      ctx.fillStyle = heat ? css('--them') : css('--ball');
       ctx.beginPath();
-      ctx.arc(p.x, p.y, S.BALL.r * (0.3 + 0.7 * (i / trail.length)), 0, Math.PI * 2);
+      ctx.arc(toX(p.x), toY(p.y), world.ball.r * (0.3 + 0.7 * (i / trail.length)), 0, Math.PI * 2);
       ctx.fill();
     });
     ctx.globalAlpha = 1;
   }
 
   function drawBall(b) {
+    const heat = world.mode === 'heatseeker';
     ctx.save();
-    ctx.shadowColor = css('--ball');
-    ctx.shadowBlur = 24;
-    ctx.fillStyle = css('--ball');
+    ctx.shadowColor = heat ? css('--them') : css('--ball');
+    ctx.shadowBlur = 60;
+    ctx.fillStyle = heat ? css('--them') : css('--ball');
     ctx.beginPath();
-    ctx.arc(b.x, b.y, S.BALL.r, 0, Math.PI * 2);
+    ctx.arc(toX(b.x), toY(b.y), world.ball.r, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
-    ctx.strokeStyle = 'rgba(255,255,255,.45)';
-    ctx.lineWidth = 2;
+    ctx.strokeStyle = 'rgba(6,13,26,.35)';
+    ctx.lineWidth = 6;
     ctx.beginPath();
-    ctx.arc(b.x, b.y, S.BALL.r - 7, 0, Math.PI * 2);
+    ctx.arc(toX(b.x), toY(b.y), world.ball.r * 0.72, 0, Math.PI * 2);
     ctx.stroke();
   }
 
   function car(view, real, i) {
+    if (real.demoTimer > 0) return;
     const colour = i === 0 ? css('--us') : css('--them');
+    const L = RL.HITBOX_LENGTH, B = RL.HITBOX_WIDTH;
     ctx.save();
-    ctx.translate(view.x, view.y);
-    ctx.rotate(view.angle);
+    ctx.translate(toX(view.x), toY(view.y));
+    ctx.rotate(-view.angle);                    /* screen y is flipped */
 
     const speed = Math.hypot(real.vx, real.vy);
-    if (speed > 60) {
-      ctx.globalAlpha = Math.min(0.5, speed / 2200);
-      ctx.fillStyle = colour;
+    if (speed > 200) {
+      ctx.globalAlpha = Math.min(0.55, speed / RL.CAR_MAX_SPEED * 0.6);
+      ctx.fillStyle = real.supersonic ? css('--boost') : colour;
       ctx.beginPath();
-      ctx.ellipse(-26, 0, 26, 9, 0, 0, Math.PI * 2);
+      ctx.ellipse(-L * 0.9, 0, L * 0.8, B * 0.32, 0, 0, Math.PI * 2);
       ctx.fill();
       ctx.globalAlpha = 1;
     }
 
     ctx.fillStyle = colour;
     ctx.shadowColor = colour;
-    ctx.shadowBlur = 14;
-    roundRect(-22, -13, 44, 26, 7);
+    ctx.shadowBlur = real.supersonic ? 40 : 18;
+    roundRect(-L / 2, -B / 2, L, B, 18);
     ctx.fill();
     ctx.shadowBlur = 0;
 
     ctx.fillStyle = 'rgba(6,13,26,.85)';
-    roundRect(-4, -9, 16, 18, 4);
+    roundRect(-L * 0.1, -B * 0.34, L * 0.36, B * 0.68, 10);
     ctx.fill();
     ctx.restore();
-  }
-
-  function roundRect(x, y, w, h, r) {
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + w, y, x + w, y + h, r);
-    ctx.arcTo(x + w, y + h, x, y + h, r);
-    ctx.arcTo(x, y + h, x, y, r);
-    ctx.arcTo(x, y, x + w, y, r);
-    ctx.closePath();
   }
 
   /* ---------- hud ---------- */
@@ -380,6 +409,13 @@
     hud.boost.style.width = b + '%';
     hud.boostN.textContent = b;
     hud.speed.textContent = Math.round(Math.hypot(world.cars[0].vx, world.cars[0].vy));
+    const me = world.cars[0];
+    const status = document.getElementById('status');
+    if (status) {
+      status.textContent = me.demoTimer > 0 ? `Demolished ${me.demoTimer.toFixed(1)}s`
+        : me.supersonic ? 'Supersonic' : world.kickoff > 0 ? 'Kickoff' : '—';
+      status.style.color = me.demoTimer > 0 ? css('--them') : me.supersonic ? css('--boost') : '';
+    }
   }
 
   function banner(title, sub, button) {
@@ -409,11 +445,26 @@
 
   hud.bannerBtn.addEventListener('click', () => (world.over || !running ? start() : null));
   document.getElementById('btn-pause').addEventListener('click', togglePause);
-  document.getElementById('btn-restart').addEventListener('click', () => {
-    world = S.create();
+  const modeSel = document.getElementById('mode');
+  const newGame = () => {
+    world = S.create({ mode: modeSel ? modeSel.value : 'soccar' });
+    trail.length = 0;
+    snapshot();
     running = true;
     hideBanner();
+    fit();
+  };
+  document.getElementById('btn-restart').addEventListener('click', newGame);
+  if (modeSel) modeSel.addEventListener('change', () => {
+    newGame();
+    toastMode(world.modeName);
   });
+  function toastMode(name) {
+    banner(name, name === 'Heatseeker' ? 'The ball hunts a goal and gains speed with every touch.'
+      : name === 'Snow day' ? 'A heavy puck that slides forever.'
+      : 'Rocket League proportions, flat.', 'Kick off');
+    running = false;
+  }
 
   fit();
   snapshot();

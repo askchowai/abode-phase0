@@ -91,7 +91,7 @@ canvas { border-radius: 12px; box-shadow: 0 0 0 1px var(--line), 0 30px 80px -40
 
 .pads {
   position: absolute; right: 18px; bottom: calc(18px + var(--safe-b)); z-index: 2;
-  display: flex; gap: 12px; align-items: flex-end;
+  display: flex; gap: 10px; align-items: flex-end;
 }
 .pad {
   width: 84px; height: 84px; border-radius: 50%;
@@ -100,6 +100,7 @@ canvas { border-radius: 12px; box-shadow: 0 0 0 1px var(--line), 0 30px 80px -40
   cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: none;
 }
 .pad--boost { background: var(--brand); color: #041018; border-color: transparent; box-shadow: var(--glow); }
+.pad--drift { background: rgba(255, 200, 87, .16); border-color: var(--boost); color: var(--boost); }
 .pad:active { transform: scale(.94); }
 
 /* ---------- dashboard ---------- */
@@ -110,6 +111,7 @@ canvas { border-radius: 12px; box-shadow: 0 0 0 1px var(--line), 0 30px 80px -40
   border-top: 1px solid var(--line); background: rgba(10, 20, 40, .8);
 }
 .gauge { display: flex; align-items: center; gap: 9px; font-variant-numeric: tabular-nums; }
+.lbl { font-size: .74rem; text-transform: uppercase; letter-spacing: .09em; color: var(--ink-3); margin-right: 2px; }
 .gauge__label { font-size: .74rem; text-transform: uppercase; letter-spacing: .09em; color: var(--ink-3); }
 .gauge__bar { width: 140px; height: 8px; border-radius: 4px; background: #10203a; overflow: hidden; }
 .gauge__fill { display: block; height: 100%; width: 34%; background: var(--boost); }
@@ -127,6 +129,6 @@ kbd {
   .scoreline { order: 2; margin: 0; }
   .keys { display: none; }
   .stage { padding: 8px; }
-  .pad { width: 76px; height: 76px; }
+  .pad { width: 68px; height: 68px; font-size: .8rem; }
   .gauge__bar { width: 96px; }
 }

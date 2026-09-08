@@ -46,7 +46,11 @@ ok('the game booted', !!w.CHOWSPEED && !!w.CHOWSPEED.world);
 ok('there is a pitch to draw on', !!d.getElementById('field'));
 ok('it opens with an explanation, not a blank screen',
    !d.getElementById('banner').hidden && /hold anywhere/i.test(d.getElementById('banner-sub').textContent));
-ok('the thumb controls exist', !!d.getElementById('btn-boost') && !!d.getElementById('btn-flip'));
+ok('the thumb controls exist',
+   !!d.getElementById('btn-boost') && !!d.getElementById('btn-flip') && !!d.getElementById('btn-drift'));
+ok('the game modes are offered', d.querySelectorAll('#mode option').length === 3);
+ok('the constants are the real ones', w.SPEED.RL.CAR_MAX_SPEED === 2300 &&
+   w.SPEED.RL.BALL_RADIUS_SOCCAR === 91.25 && w.SPEED.RL.BOOST.LOCS_SMALL.length === 28);
 ok('the pitch takes touches, not page scrolling',
    /touch-action:\s*none/.test(fs.readFileSync(at('assets/style.css'), 'utf8')));
 ok('the scoreboard, clock and boost gauge are wired',
