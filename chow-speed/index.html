@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>C.H.O.W. Speed</title>
+<meta name="description" content="A rocket-powered ball game: drive, boost, flip, score. Built in the spirit of RocketSim — the physics is a library, the game is a client.">
+<meta name="theme-color" content="#060d1a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CHOW Speed">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230a1428'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%2300d4ff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="bar">
+  <div class="brand"><span class="brand__mark"></span>C.H.O.W. <span>Speed</span></div>
+  <div class="scoreline">
+    <span class="team team--us">You <b id="score-us">0</b></span>
+    <span class="clock" id="clock">3:00</span>
+    <span class="team team--them"><b id="score-them">0</b> Rival</span>
+  </div>
+  <div class="bar__acts">
+    <button class="btn" id="btn-pause">Pause</button>
+    <button class="btn" id="btn-restart">Restart</button>
+  </div>
+</header>
+
+<main id="stage" class="stage">
+  <canvas id="field" width="1200" height="760" aria-label="The pitch"></canvas>
+
+  <div class="banner" id="banner" hidden>
+    <h1 id="banner-text">C.H.O.W. Speed</h1>
+    <p id="banner-sub">Hold anywhere to drive.</p>
+    <button class="btn btn--primary" id="banner-btn">Kick off</button>
+  </div>
+
+  <div class="pads">
+    <button class="pad pad--flip" id="btn-flip" aria-label="Flip">Flip</button>
+    <button class="pad pad--boost" id="btn-boost" aria-label="Boost">Boost</button>
+  </div>
+</main>
+
+<footer class="dash">
+  <div class="gauge">
+    <span class="gauge__label">Boost</span>
+    <span class="gauge__bar"><span class="gauge__fill" id="boost-fill"></span></span>
+    <b id="boost-n">34</b>
+  </div>
+  <div class="gauge gauge--speed"><span class="gauge__label">Speed</span><b id="speedo">0</b><span class="gauge__unit">u/s</span></div>
+  <p class="keys">Keys: <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> drive · <kbd>shift</kbd> boost · <kbd>space</kbd> flip · <kbd>P</kbd> pause</p>
+</footer>
+
+<script src="assets/physics.js"></script>
+<script src="assets/game.js"></script>
+</body>
+</html>

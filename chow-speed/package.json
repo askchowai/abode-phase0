@@ -1,0 +1,10 @@
+{
+  "name": "chow-speed",
+  "version": "0.1.0",
+  "private": true,
+  "description": "C.H.O.W. Speed — a rocket-powered ball game whose physics is a library first and a game second.",
+  "scripts": {
+    "start": "node -e \"const h=require('http'),f=require('fs'),p=require('path'),t={'.html':'text/html','.css':'text/css','.js':'text/javascript'};h.createServer((q,r)=>{const x=p.resolve('.'+decodeURIComponent(q.url.split('?')[0]).replace(/\\/$/,'/index.html'));if(!f.existsSync(x)||f.statSync(x).isDirectory()){r.writeHead(404);return r.end('not found')}r.writeHead(200,{'content-type':t[p.extname(x)]||'text/plain'});r.end(f.readFileSync(x))}).listen(4174,()=>console.log('C.H.O.W. Speed on http://localhost:4174'))\"",
+    "test": "node test/physics.mjs && node test/page.mjs"
+  }
+}
