@@ -1,0 +1,14 @@
+{
+  "name": "Abode",
+  "short_name": "Abode",
+  "description": "Every house has a page, a feed, and a memory.",
+  "start_url": "index.html",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f7f5ef",
+  "theme_color": "#1c6b48",
+  "icons": [
+    { "src": "assets/icon-180.png", "sizes": "180x180", "type": "image/png", "purpose": "any" }
+  ]
+}

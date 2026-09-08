@@ -9,7 +9,7 @@
 
   /* ---------- state ---------- */
 
-  const blank = { saves: {}, follows: {}, votes: {}, posts: {}, replies: {}, offers: {}, joined: {}, claims: {}, pins: {}, alerts: null, read: {}, reports: {}, dms: {}, dmSent: {}, account: null, offerReplies: {}, searches: {}, decisions: {}, modOf: {}, agent: null, repping: {}, openHouses: {}, rsvps: {}, work: {}, loan: null, compare: [], recent: [], recentSearches: [], visits: {}, going: {}, afford: null, notes: {}, muted: {}, tours: {}, streets: {}, requests: [], feedSeen: null };
+  const blank = { saves: {}, follows: {}, votes: {}, posts: {}, replies: {}, offers: {}, joined: {}, claims: {}, pins: {}, alerts: null, read: {}, reports: {}, dms: {}, dmSent: {}, account: null, offerReplies: {}, searches: {}, decisions: {}, modOf: {}, agent: null, repping: {}, openHouses: {}, rsvps: {}, work: {}, loan: null, compare: [], recent: [], recentSearches: [], visits: {}, going: {}, afford: null, notes: {}, place: null, muted: {}, tours: {}, streets: {}, requests: [], feedSeen: null };
   let S;
   try { S = Object.assign({}, blank, JSON.parse(localStorage.getItem(KEY) || '{}')); }
   catch (e) { S = Object.assign({}, blank); }
@@ -563,6 +563,26 @@
         <span class="composer__hint" id="note-state">${n ? 'Saved' : 'Not saved yet'}</span>
         <button class="btn btn--sm" id="note-save">Save the note</button>
       </div>
+    </div>`;
+  }
+
+  /* ---------- somewhere you go ---------- */
+  /* Distance to a place that matters to you — work, a school, a parent's house.
+     There is no geocoder here, so you set the point on the map or pick an address,
+     and the number is a straight line, which the label says out loud. */
+
+  const myPlace = () => S.place || null;
+
+  function placeControls() {
+    const p = myPlace();
+    return `<div class="place">
+      ${p ? `<span class="place__set"><b>${esc(p.name)}</b> — showing how far each home is, as the crow flies</span>
+             <button class="btn btn--sm" id="place-clear">Clear</button>`
+        : `<label class="lbl lbl--inline" for="place-pick">Somewhere you go</label>
+           <select class="field field--sm" id="place-pick">
+             <option value="">Pick a point…</option>
+             ${D.listings.map((l) => `<option value="${l.id}">${esc(l.street)}, ${esc(l.city)}</option>`).join('')}
+           </select>`}
     </div>`;
   }
 
@@ -1603,6 +1623,17 @@
     return 2 * R * Math.asin(Math.sqrt(s));
   }
 
+  /* ray casting, the standard trick: count crossings to the right of the point */
+  function inShape(pt, shape) {
+    let inside = false;
+    for (let i = 0, j = shape.length - 1; i < shape.length; j = i++) {
+      const a = shape[i], b = shape[j];
+      if ((a.lat > pt.lat) !== (b.lat > pt.lat) &&
+          pt.lng < (b.lng - a.lng) * (pt.lat - a.lat) / (b.lat - a.lat) + a.lng) inside = !inside;
+    }
+    return inside;
+  }
+
   const distanceLabel = (mi) => mi < 1 ? `${Math.round(mi * 5280 / 100) * 100} ft`
     : mi < 10 ? `${mi.toFixed(1)} mi` : `${Math.round(mi)} mi`;
 
@@ -2426,6 +2457,8 @@
     /* Null until you move the map. Once you do, the view stops following the
        results and starts following you — same rule every map app has. */
     let view = null;
+    /* When you draw, the map stops panning and starts collecting points. */
+    let drawing = false, shape = [];
 
     function project(w, h) {
       const pad = opts.compact ? { l: 30, r: 12, t: 12, b: 24 } : { l: 46, r: 20, t: 20, b: 32 };
@@ -2634,16 +2667,51 @@
           <rect class="mp__bg" width="${w}" height="${h}"/>
           ${graticule(p)}${scaleBar(p)}${pins(p)}
         </svg>` + popup(p) +
-        (opts.compact ? '' : `<div class="mp__ctrl">
+        (opts.compact ? '' : `${shape.length ? `<svg class="mp__shape" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true">
+            <polygon points="${shape.map((pt) => `${p.x(pt.lng).toFixed(1)},${p.y(pt.lat).toFixed(1)}`).join(' ')}"/>
+            ${shape.map((pt) => `<circle cx="${p.x(pt.lng).toFixed(1)}" cy="${p.y(pt.lat).toFixed(1)}" r="4"/>`).join('')}
+          </svg>` : ''}
+          <div class="mp__ctrl">
           <button data-zoom="0.7" aria-label="Zoom in">+</button>
           <button data-zoom="1.45" aria-label="Zoom out">−</button>
           ${view ? '<button data-fit aria-label="Fit the map to the results">⤢</button>' : ''}
+          <button data-draw aria-pressed="${drawing}" aria-label="${drawing ? 'Finish the area' : 'Draw an area'}">${drawing ? '✓' : '✎'}</button>
+          ${shape.length ? '<button data-undraw aria-label="Clear the area">✕</button>' : ''}
         </div>
+        ${drawing ? `<div class="mp__hint">Click the map to trace an area. ${shape.length > 2 ? 'Press the tick to search inside it.' : 'Three points or more.'}</div>` : ''}
         ${view && opts.onArea ? '<button class="mp__area" data-area>Search this area</button>' : ''}`) +
         (opts.caption ? `<div class="mp__cap">${opts.caption}</div>` : '');
     }
 
     host.addEventListener('click', (ev) => {
+      if (ev.target.closest('[data-draw]')) {
+        if (drawing && shape.length > 2) {
+          drawing = false;
+          render();
+          if (opts.onShape) opts.onShape(shape.slice());
+        } else {
+          drawing = true; shape = [];
+          render();
+          if (opts.onShape) opts.onShape(null);
+        }
+        return;
+      }
+      if (ev.target.closest('[data-undraw]')) {
+        shape = []; drawing = false; render();
+        if (opts.onShape) opts.onShape(null);
+        return;
+      }
+      if (drawing && proj) {
+        const svg = host.querySelector('.mp__svg');
+        const box = svg.getBoundingClientRect();
+        const scale = (box.width || proj.w) / proj.w;
+        const px = (ev.clientX - box.left) / scale, py = (ev.clientY - box.top) / scale;
+        if (px >= 0 && py >= 0) {
+          shape.push({ lng: proj.lng(px), lat: proj.lat(py) });
+          render();
+          return;
+        }
+      }
       const z = ev.target.closest('[data-zoom]');
       if (z) { zoomBy(Number(z.dataset.zoom)); return; }
       if (ev.target.closest('[data-fit]')) { view = null; render(); if (opts.onArea) opts.onArea(null); return; }
@@ -2717,7 +2785,7 @@
     if (!opts.compact) {
       let from = null, moved = 0;
       host.addEventListener('mousedown', (ev) => {
-        if (ev.target.closest('button')) return;
+        if (ev.target.closest('button') || drawing) return;
         from = { x: ev.clientX, y: ev.clientY };
         moved = 0;
         host.classList.add('is-dragging');
@@ -2771,6 +2839,7 @@
         render();
       },
       fit() { view = null; render(); },
+      clearShape() { shape = []; drawing = false; render(); },
       visible,
       highlight(id) {
         if (hot === id) return;
@@ -2798,6 +2867,7 @@
           <div class="card__addr">${esc(l.street)}, ${esc(l.city)}, ${l.state} ${l.zip}</div>
           <div class="card__facts"><span><b>${l.beds}</b> bd</span><span><b>${l.baths}</b> ba</span><span><b>${l.sqft.toLocaleString()}</b> sqft</span><span><b>${l.lot}</b> ac</span></div>
         </a>
+        ${myPlace() ? `<div class="card__dist">${distanceLabel(milesBetween(myPlace(), l))} from ${esc(myPlace().name)}</div>` : ''}
         <div class="card__social" style="margin-top:auto">
           <span>👥 ${compact(followers(l))} following</span>
           <span>💬 ${commentCount(l)}</span>
@@ -3013,10 +3083,11 @@
       </div>`;
     }
 
-    let area = null;
+    let area = null, shape = null;
     const chips = { open: false, cut: false, owner: false, talk: false };
     const map = mapView(mapHost, {
       onArea(box) { area = box; run({ keepView: true }); },
+      onShape(pts) { shape = pts; run({ keepView: true }); },
       onHover(id) {
         results.querySelectorAll('.card.is-hot').forEach((c) => c.classList.remove('is-hot'));
         const c = id && cardEl(id);
@@ -3120,8 +3191,9 @@
 
       let out = D.listings.filter((l) => {
         const hay = `${l.street} ${l.city} ${l.state} ${l.zip} ${l.type} ${l.features.join(' ')}`.toLowerCase();
-        const inArea = !area || (l.lat <= area.north && l.lat >= area.south &&
-          l.lng >= area.west && l.lng <= area.east);
+        const inArea = (!area || (l.lat <= area.north && l.lat >= area.south &&
+          l.lng >= area.west && l.lng <= area.east)) &&
+          (!shape || inShape(l, shape));
         const chipsOk = (!chips.open || !!openHouse(l)) &&
           (!chips.cut || (l.prior && l.prior > l.price)) &&
           (!chips.owner || postsFor(l).some((p) => p.by === l.owner)) &&
@@ -3137,9 +3209,10 @@
       const centre = area ? { lat: (area.north + area.south) / 2, lng: (area.east + area.west) / 2 } : null;
       const sorts = {
         relevant: (a, b) => followers(b) - followers(a),
-        near: (a, b) => centre
-          ? milesBetween(centre, a) - milesBetween(centre, b)
-          : followers(b) - followers(a),
+        near: (a, b) => {
+          const from = myPlace() || centre;
+          return from ? milesBetween(from, a) - milesBetween(from, b) : followers(b) - followers(a);
+        },
         low: (a, b) => a.price - b.price,
         high: (a, b) => b.price - a.price,
         new: (a, b) => a.dom - b.dom,
@@ -3152,13 +3225,13 @@
       countEl.setAttribute('aria-live', 'polite');
       countEl.setAttribute('role', 'status');
       countEl.textContent =
-        `${out.length} ${out.length === 1 ? 'home' : 'homes'}${q ? ` matching “${el.q.value.trim()}”` : ''}${area ? ' in this area' : ''}`;
+        `${out.length} ${out.length === 1 ? 'home' : 'homes'}${q ? ` matching “${el.q.value.trim()}”` : ''}${shape ? ' inside the shape you drew' : area ? ' in this area' : ''}`;
       results.innerHTML = out.length
         ? out.map(card).join('')
         : emptyResults(q, min, max, beds, st);
       map.set(out);
       /* Typing a filter re-fits the map; moving the map does not. */
-      if (!(o && o.keepView)) { area = null; map.fit(); }
+      if (!(o && o.keepView)) { area = null; shape = null; map.fit(); map.clearShape(); }
       syncUrl();
       paintRecentSearches();
       clearTimeout(rememberT);
@@ -3172,7 +3245,7 @@
       el.beds.value = '0'; el.status.value = 'any'; el.sort.value = 'relevant';
       Object.keys(chips).forEach((k) => { chips[k] = false; });
       document.querySelectorAll('[data-chip]').forEach((c) => c.setAttribute('aria-pressed', 'false'));
-      area = null; map.fit();
+      area = null; shape = null; map.fit(); map.clearShape();
       run();
     });
     document.querySelector('.chips').addEventListener('click', (ev) => {
@@ -3207,6 +3280,24 @@
         if (b) b.setAttribute('aria-pressed', 'true');
       }
     });
+
+    function renderPlace() {
+      const host = document.getElementById('place-slot');
+      host.innerHTML = placeControls();
+      const pick = document.getElementById('place-pick');
+      if (pick) pick.addEventListener('change', () => {
+        const l = D.byId[pick.value];
+        if (!l) return;
+        S.place = { name: l.street, lat: l.lat, lng: l.lng };
+        save(); renderPlace(); run();
+        toast(`Distances are now measured from ${l.street}`);
+      });
+      const clear = document.getElementById('place-clear');
+      if (clear) clear.addEventListener('click', () => {
+        delete S.place; save(); renderPlace(); run();
+      });
+    }
+    renderPlace();
 
     document.getElementById('afford-toggle').addEventListener('click', () => {
       const box = document.getElementById('afford');

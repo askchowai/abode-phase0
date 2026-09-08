@@ -61,6 +61,20 @@ const ld2 = JSON.parse(dom2.window.document.getElementById('ld').textContent);
 ok('an off-market address carries no offer', !ld2.offers);
 dom2.window.close();
 
+/* a phone should be able to keep it on the home screen */
+const manifest = JSON.parse(fs.readFileSync('manifest.webmanifest', 'utf8'));
+ok('there is a web manifest with an icon', manifest.name === 'Abode' && manifest.icons.length > 0 &&
+   fs.existsSync(manifest.icons[0].src));
+ok('the manifest points at a page that exists', fs.existsSync(manifest.start_url));
+const home = fs.readFileSync('index.html', 'utf8');
+ok('the viewport allows for a notch', /viewport-fit=cover/.test(home));
+ok('ios has an icon and a title', /apple-touch-icon/.test(home) && /apple-mobile-web-app-title/.test(home));
+ok('the browser chrome is themed for both schemes',
+   (home.match(/name="theme-color"/g) || []).length === 2);
+const noManifest = fs.readdirSync('.').filter((f) => f.endsWith('.html'))
+  .filter((f) => !/manifest.webmanifest/.test(fs.readFileSync(f, 'utf8')));
+ok('every page links the manifest', noManifest.length === 0, noManifest.join(', '));
+
 /* the sitemap covers the data */
 const sitemap = fs.readFileSync('sitemap.xml', 'utf8');
 const dataDom = new JSDOM('<!doctype html><html></html>', { runScripts: 'outside-only' });
@@ -70,6 +84,8 @@ const missingAddresses = all.listings.filter((x) => !sitemap.includes(`address.h
 ok('every address is in the sitemap', missingAddresses.length === 0, missingAddresses.map((x) => x.id).join(', '));
 ok('every group is in the sitemap', all.groups.every((g) => sitemap.includes(`group.html?id=${g.id}`)));
 ok('the sitemap is well formed', sitemap.startsWith('<?xml') && sitemap.includes('</urlset>'));
+ok('the manifest and icon ship with the site', fs.existsSync('assets/icon-180.png') &&
+   fs.statSync('assets/icon-180.png').size > 200);
 ok('robots points at the sitemap', fs.readFileSync('robots.txt', 'utf8').includes('Sitemap:'));
 
 srv.close();

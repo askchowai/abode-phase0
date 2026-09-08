@@ -1196,3 +1196,69 @@ a.chip { text-decoration: none; }
 .est__bar { position: relative; height: 8px; border-radius: 4px; background: linear-gradient(90deg, var(--accent-wash), var(--accent)); }
 .est__bar span { position: absolute; top: -4px; width: 3px; height: 16px; border-radius: 2px; background: var(--ink); }
 .est__note { font-size: .88rem; color: var(--ink-2); margin: 10px 0 12px; }
+
+/* ---------- drawn areas ---------- */
+
+.mp__shape { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.mp__shape polygon { fill: var(--accent); fill-opacity: .12; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 6 4; }
+.mp__shape circle { fill: var(--surface); stroke: var(--accent); stroke-width: 2; }
+.mp__hint {
+  position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%);
+  background: var(--tip-bg); color: var(--tip-ink); border-radius: 999px;
+  padding: 7px 14px; font-size: .82rem; white-space: nowrap; box-shadow: var(--shadow);
+}
+
+/* ---------- a place you go ---------- */
+
+.place { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.place__set { font-size: .85rem; color: var(--ink-3); }
+.place__set b { color: var(--accent); }
+.card__dist { font-size: .8rem; color: var(--accent); font-weight: 600; margin-top: 6px; }
+
+/* ---------- phones ---------- */
+/* Written for a hand: nothing important inside the notch or under the home bar,
+   tap targets a thumb can hit, and the map preview as a sheet rather than a
+   floating card that falls off the screen. */
+
+:root { --safe-t: env(safe-area-inset-top, 0px); --safe-b: env(safe-area-inset-bottom, 0px); }
+
+@media (max-width: 760px) {
+  .masthead { padding-top: var(--safe-t); }
+  .tray { padding-bottom: var(--safe-b); }
+  .intro__inner { padding-top: calc(12px + var(--safe-t)); }
+
+  /* a thumb needs 44px, whatever the design would prefer */
+  .btn, .chip, .viewtoggle button, .nav a, .mp__ctrl button, .card__save, .card__cmp,
+  .themetoggle, .nav__bell, .alert__mark, .sheet__x, .lightbox__nav {
+    min-height: 44px;
+  }
+  .btn, .chip { display: inline-flex; align-items: center; }
+  .card__save, .card__cmp { width: 44px; height: 44px; }
+  .card__cmp { right: 62px; }
+
+  .filters { gap: 10px; }
+  .f--grow { min-width: 100%; }
+  .searchview--split .searchview__map, .searchview--map .mp { height: 62vh; }
+
+  /* the pin preview becomes a sheet pinned to the bottom of the map */
+  .mp__pop, .mp__pop--below {
+    left: 12px !important; right: 12px; top: auto !important; bottom: 12px;
+    width: auto; transform: none;
+  }
+  .mp__popmedia { height: 96px; }
+
+  .dm__msg { max-width: 88%; }
+  .cost__inputs { grid-template-columns: 1fr 1fr; }
+  .worklog__grid, .quiet, .afford__inputs { grid-template-columns: 1fr; }
+  .sheet { padding: 12px; align-items: flex-end; }
+  .sheet__box { max-height: 82vh; padding: 22px 20px calc(22px + var(--safe-b)); border-radius: var(--r-lg) var(--r-lg) 0 0; }
+  .doc { padding: 28px 0 60px; }
+  .grp-head__actions, .addr-bar__actions { width: 100%; }
+}
+
+@media (max-width: 420px) {
+  .hero h1 { font-size: 2rem; }
+  .addr-bar__price { font-size: 1.7rem; }
+  .cmpgrid__row { grid-template-columns: 92px repeat(var(--n), minmax(0, 1fr)); }
+  .est b { font-size: 1.25rem; }
+}

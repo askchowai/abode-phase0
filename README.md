@@ -9,6 +9,14 @@ the owner directly.
 `PLAN.md` is the phased build plan. This repo is **Phase 0**: the full product
 surface, running against mock data that stands in for the MLS.
 
+## On a phone
+
+The layout is written for a hand as well as a desk: tap targets clear 44px, the
+map preview becomes a bottom sheet, sheets rise from the bottom edge, and the
+notch and home bar are respected. `manifest.webmanifest` and an icon mean iOS can
+keep it on the home screen; `tools/icon.mjs` draws that icon from scratch, so the
+repo carries no binary nobody can regenerate.
+
 ## Run it
 
 No build step, no framework. Open `index.html` in a browser, or:
@@ -65,6 +73,8 @@ page load.
 | open houses | Owners and the agent of record schedule one; anyone can RSVP; it flags on search cards, fires an alert to followers and lands on the agent desk |
 | `compare.html` | Up to four homes side by side on the numbers that differ, with the best cell in each row marked; the tray follows you between pages |
 | recently viewed | The last eight addresses you opened, on address pages and your saved page |
+| draw an area | Trace a shape on the map and search only inside it |
+| distance | Name somewhere you go and every card says how far it is, as the crow flies, with a closest-first sort |
 | affordability | Works backwards from income, debts and cash to a price ceiling, says which assumptions did it, and can drive the search |
 | estimate | A range from the nearest addresses with a page, with the working shown and a plain statement that it is not an appraisal |
 | private notes | A note on any address that only you see, and that travels in your data export |

@@ -227,6 +227,32 @@ const ok = (name, cond, extra = '') => { console.log(`${cond ? 'PASS' : 'FAIL'} 
   const prices = [...d.querySelectorAll('#results .card__price')].map((e) => Number(e.textContent.replace(/[^0-9]/g, '').slice(0, 7)));
   ok('max price filter', count() === 6, String(count()));
 
+  {
+    /* draw a box around the Asheville cluster and search inside it */
+    const svg = d.querySelector('#map .mp__svg');
+    svg.getBoundingClientRect = () => ({ left: 0, top: 0, width: 1000, height: 700 });
+    click(d.querySelector('[data-draw]')); await tick();
+    ok('drawing mode explains itself', !!d.querySelector('.mp__hint'));
+    const at = (x, y) => {
+      const ev = new d.defaultView.MouseEvent('click', { bubbles: true, clientX: x, clientY: y });
+      d.querySelector('#map .mp__svg').dispatchEvent(ev);
+    };
+    at(600, 300); await tick();
+    at(760, 300); await tick();
+    at(760, 460); await tick();
+    at(600, 460); await tick();
+    ok('the shape is drawn as you click', !!d.querySelector('.mp__shape polygon') &&
+       d.querySelectorAll('.mp__shape circle').length === 4);
+    click(d.querySelector('[data-draw]')); await tick();
+    ok('finishing filters to what is inside it', count() > 0 && count() < 21 &&
+       d.getElementById('count').textContent.includes('inside the shape'),
+       d.getElementById('count').textContent);
+    const inside = count();
+    click(d.querySelector('[data-undraw]')); await tick();
+    ok('clearing the shape widens the results again', !d.querySelector('.mp__shape') && count() > inside &&
+       !d.getElementById('count').textContent.includes('inside the shape'), `${inside} -> ${count()}`);
+  }
+
   d.getElementById('f-min').value = '9000000';
   d.getElementById('f-min').dispatchEvent(new d.defaultView.Event('input', { bubbles: true })); await tick();
   ok('empty state', d.getElementById('results').textContent.includes('Nothing matches'));
@@ -686,6 +712,27 @@ const ok = (name, cond, extra = '') => { console.log(`${cond ? 'PASS' : 'FAIL'} 
   const { d: d2 } = await open('/address.html?id=a13');
   ok('a first visit says nothing of the kind', !d2.querySelector('.sincebar--page'));
   carried = before;
+}
+
+/* --- distance from somewhere you go --- */
+{
+  const { d, w } = await open('/search.html');
+  ok('no distances until you name a place', !d.querySelector('.card__dist') && !!d.getElementById('place-pick'));
+  d.getElementById('place-pick').value = 'a6';
+  d.getElementById('place-pick').dispatchEvent(new d.defaultView.Event('change', { bubbles: true })); await tick();
+  ok('every card then says how far it is', d.querySelectorAll('.card__dist').length ===
+     d.querySelectorAll('#results .card').length);
+  ok('it says the measurement is a straight line',
+     d.getElementById('place-slot').textContent.includes('as the crow flies'));
+  ok('the place is remembered', JSON.parse(w.localStorage.getItem('abode.state.v1')).place.name === '1414 Chandler St');
+
+  d.getElementById('f-sort').value = 'near';
+  d.getElementById('f-sort').dispatchEvent(new d.defaultView.Event('change', { bubbles: true })); await tick();
+  const first = d.querySelector('#results .card__addr').textContent;
+  ok('closest first sorts from that place', first.includes('Detroit'), first);
+
+  click(d.getElementById('place-clear')); await tick();
+  ok('clearing it removes the distances', !d.querySelector('.card__dist'));
 }
 
 /* --- affordability, notes, estimate --- */
