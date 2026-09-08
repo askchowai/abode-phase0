@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node -e \"const h=require('http'),f=require('fs'),p=require('path'),t={'.html':'text/html','.css':'text/css','.js':'text/javascript'};h.createServer((q,r)=>{const x=p.resolve('.'+decodeURIComponent(q.url.split('?')[0]).replace(/\\/$/,'/index.html'));if(!f.existsSync(x)||f.statSync(x).isDirectory()){r.writeHead(404);return r.end('not found')}r.writeHead(200,{'content-type':t[p.extname(x)]||'text/plain'});r.end(f.readFileSync(x))}).listen(4173,()=>console.log('Abode on http://localhost:4173'))\"",
     "sitemap": "node tools/sitemap.mjs",
-    "test": "node test/data.mjs && node test/contrast.mjs && node test/render.mjs && node test/a11y.mjs && node test/links.mjs && node test/perf.mjs && node test/seo.mjs && node test/interactions.mjs"
+    "test": "node test/data.mjs && node test/contrast.mjs && node test/render.mjs && node test/a11y.mjs && node test/links.mjs && node test/perf.mjs && node test/seo.mjs && node test/mobile.mjs && node test/interactions.mjs"
   },
   "devDependencies": { "jsdom": "^27.0.0" }
 }

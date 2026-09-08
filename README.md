@@ -13,7 +13,13 @@ surface, running against mock data that stands in for the MLS.
 
 The layout is written for a hand as well as a desk: tap targets clear 44px, the
 map preview becomes a bottom sheet, sheets rise from the bottom edge, and the
-notch and home bar are respected. `manifest.webmanifest` and an icon mean iOS can
+notch and home bar are respected. A single finger scrolls the page over the map
+rather than dragging it — two fingers pan, a pinch zooms. Full-height panes use
+`dvh` so the iOS address bar cannot push content off screen, the comparison table
+scrolls sideways rather than crushing four columns into a phone, and
+`test/mobile.mjs` fails the build on a fixed width wider than a phone, a grid that
+never collapses, a form field small enough to trigger the iOS zoom, an unwrappable
+row, a blocked pinch or a tap target under 44px. `manifest.webmanifest` and an icon mean iOS can
 keep it on the home screen; `tools/icon.mjs` draws that icon from scratch, so the
 repo carries no binary nobody can regenerate.
 

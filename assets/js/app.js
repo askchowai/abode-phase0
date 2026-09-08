@@ -1287,6 +1287,7 @@
   function renderTray() {
     let tray = document.querySelector('.tray');
     const list = compareIds();
+    document.body.classList.toggle('has-tray', list.length > 0);
     if (!list.length) { if (tray) tray.remove(); paintCompareButtons(); return; }
     if (!tray) {
       tray = document.createElement('div');
@@ -2806,6 +2807,11 @@
         if (ev.touches.length === 1) { touch = { x: ev.touches[0].clientX, y: ev.touches[0].clientY }; pinch = 0; }
         else if (ev.touches.length === 2) { pinch = spread(ev.touches); touch = null; }
       }, { passive: true });
+      /* On a phone a single finger belongs to the page, not the map — a map that
+         swallows vertical drags traps you halfway down the results. Two fingers
+         pan it, a pinch zooms it. */
+      const oneFingerPans = () => window.innerWidth > 760;
+
       host.addEventListener('touchmove', (ev) => {
         if (ev.touches.length === 2 && pinch) {
           const now = spread(ev.touches);
@@ -2813,7 +2819,7 @@
           ev.preventDefault();
           return;
         }
-        if (!touch || ev.touches.length !== 1) return;
+        if (!touch || ev.touches.length !== 1 || !oneFingerPans()) return;
         const dx = ev.touches[0].clientX - touch.x, dy = ev.touches[0].clientY - touch.y;
         if (Math.abs(dx) + Math.abs(dy) < 3) return;
         touch = { x: ev.touches[0].clientX, y: ev.touches[0].clientY };
@@ -3380,14 +3386,14 @@
         <div class="panel__title">Who is on this page</div>
         <div class="panel__sub">Everyone with standing at this address</div>
         <div style="display:grid;gap:13px">
-          <div style="display:flex;gap:10px;align-items:center">${avatar(l.owner)}
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">${avatar(l.owner)}
             <div><a href="profile.html?u=${l.owner}" style="font-weight:600">${esc(owner.name)}</a><div>${badge(owner.role)}</div></div></div>
-          <div style="display:flex;gap:10px;align-items:center">${avatar(l.agent)}
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">${avatar(l.agent)}
             <div style="flex:1"><a href="profile.html?u=${l.agent}" style="font-weight:600">${esc(agent.name)}</a><div>${badge(agent.role)}</div></div>
             <button class="btn btn--sm" data-dm="${l.agent}" data-dm-about="${l.id}">Message</button></div>
           <div id="me-row"></div>
         </div>
-        <div style="display:flex;align-items:center;gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line-2)">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px;padding-top:16px;border-top:1px solid var(--line-2)">
           <div class="faces">${['u2', 'u5', 'u8', 'u9'].map((u) => avatar(u, true)).join('')}</div>
           <div style="font-size:.88rem;color:var(--ink-3)"><b id="foll-n" style="color:var(--ink)">${compact(followers(l))}</b> people follow this address${
             l.history[0] ? ` · last moved ${esc(l.history[0].date)}` : ''}</div>
@@ -3572,7 +3578,7 @@
       if (!row) return;
       const r = myRoleAt(l.id);
       row.innerHTML = r
-        ? `<div style="display:flex;gap:10px;align-items:center">${avatar('me', false, r)}
+        ? `<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">${avatar('me', false, r)}
              <div><div style="font-weight:600">${esc(displayName())}</div><div>${badge(r)}</div></div></div>`
         : '';
     }
@@ -3878,7 +3884,7 @@
 
     const oneItem = (it) => {
       const { l, p } = it;
-      const head = `<div style="display:flex;gap:10px;align-items:center;padding-bottom:13px;margin-bottom:13px;border-bottom:1px solid var(--line-2)">
+      const head = `<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding-bottom:13px;margin-bottom:13px;border-bottom:1px solid var(--line-2)">
           <a href="address.html?id=${l.id}" aria-label="${esc(l.street)}" style="width:56px;height:44px;border-radius:8px;overflow:hidden;flex:none">${art(l.hue, 0)}</a>
           <div style="flex:1;min-width:0">
             <a href="address.html?id=${l.id}" style="font-weight:600">${esc(l.street)}</a>
@@ -3900,7 +3906,7 @@
     const oldFeedItem = (l, p) => {
       const u = user(p.by);
       return `<div class="panel">
-        <div style="display:flex;gap:10px;align-items:center;padding-bottom:13px;margin-bottom:13px;border-bottom:1px solid var(--line-2)">
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding-bottom:13px;margin-bottom:13px;border-bottom:1px solid var(--line-2)">
           <a href="address.html?id=${l.id}" aria-label="${esc(l.street)}" style="width:56px;height:44px;border-radius:8px;overflow:hidden;flex:none">${art(l.hue, 0)}</a>
           <div style="flex:1;min-width:0">
             <a href="address.html?id=${l.id}" style="font-weight:600">${esc(l.street)}</a>

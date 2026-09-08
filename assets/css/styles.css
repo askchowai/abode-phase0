@@ -430,16 +430,16 @@ label.lbl { display: block; font-size: .8rem; text-transform: uppercase; letter-
 .searchview--list .searchview__map { display: none; }
 .searchview--map { grid-template-columns: 1fr; }
 .searchview--map .searchview__list { display: none; }
-.searchview--map .mp { height: calc(100vh - 210px); }
+.searchview--map .mp { height: calc(100vh - 210px); height: calc(100dvh - 210px); }
 .searchview--split { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 .searchview--split .grid { grid-template-columns: 1fr; gap: 18px; }
-.searchview--split .searchview__list { max-height: calc(100vh - 190px); overflow-y: auto; padding-right: 4px; }
+.searchview--split .searchview__list { max-height: calc(100vh - 190px); max-height: calc(100dvh - 190px); overflow-y: auto; padding-right: 4px; }
 .searchview__map { position: sticky; top: 84px; }
 
 /* ---------- map ---------- */
 
 .mp {
-  position: relative; height: calc(100vh - 210px); min-height: 420px;
+  position: relative; height: calc(100vh - 210px); height: calc(100dvh - 210px); min-height: 420px;
   border: 1px solid var(--line); border-radius: var(--r);
   background: var(--canvas); overflow: hidden; box-shadow: var(--shadow);
 }
@@ -538,7 +538,7 @@ label.lbl { display: block; font-size: .8rem; text-transform: uppercase; letter-
   padding: 20px; background: rgba(16, 26, 20, .42); backdrop-filter: blur(2px);
 }
 .sheet__box {
-  position: relative; width: min(520px, 100%); max-height: 88vh; overflow-y: auto;
+  position: relative; width: min(520px, 100%); max-height: 88vh; max-height: 88dvh; overflow-y: auto;
   background: var(--surface); border-radius: var(--r-lg); box-shadow: var(--shadow-lg); padding: 28px;
 }
 .sheet__x {
@@ -870,7 +870,7 @@ label.lbl { display: block; font-size: .8rem; text-transform: uppercase; letter-
 
 /* ---------- small screens ---------- */
 
-.mp { touch-action: none; }
+.mp { touch-action: pan-y pinch-zoom; }   /* the page still scrolls over the map */
 .mp--locator { touch-action: auto; }
 .mp__svg:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 
@@ -1238,6 +1238,14 @@ a.chip { text-decoration: none; }
 
   .filters { gap: 10px; }
   .f--grow { min-width: 100%; }
+  /* two filters to a row rather than five squeezed into one */
+  .filters .f { min-width: calc(50% - 5px); flex: 1 1 calc(50% - 5px); }
+  .filters .f--chips, .filters #place-slot { min-width: 100%; flex-basis: 100%; }
+
+  /* four columns of numbers do not fit; let the comparison scroll sideways */
+  .cmpgrid { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .cmpgrid__row { grid-template-columns: 104px repeat(var(--n), minmax(124px, 1fr)); }
+  .cmpgrid__art { height: 72px; }
   .searchview--split .searchview__map, .searchview--map .mp { height: 62vh; }
 
   /* the pin preview becomes a sheet pinned to the bottom of the map */
@@ -1254,6 +1262,21 @@ a.chip { text-decoration: none; }
   .sheet__box { max-height: 82vh; padding: 22px 20px calc(22px + var(--safe-b)); border-radius: var(--r-lg) var(--r-lg) 0 0; }
   .doc { padding: 28px 0 60px; }
   .grp-head__actions, .addr-bar__actions { width: 100%; }
+
+  /* nothing smaller than eleven and a half pixels, and long tokens must break */
+  .tag, .badge, .post__type, .flagpill, .alert__meta, .tl__tag { font-size: .72rem; }
+  .post__text, .dm__bubble, .doc p, .qrow__q, .modcard__post p { overflow-wrap: anywhere; }
+  .mp__hint { max-width: calc(100vw - 40px); white-space: normal; text-align: center; }
+
+  /* small text buttons keep their inline look but get a thumb-sized hit area */
+  .linkish { padding: 11px 2px; margin: -11px 0; }
+  .btn--sm { min-height: 44px; }
+}
+
+@media (max-width: 480px) {
+  .facts { grid-template-columns: 1fr; }
+  .cost__inputs { grid-template-columns: 1fr; }
+  .cmp__row { grid-template-columns: minmax(0, 1fr) 44px auto; }
 }
 
 @media (max-width: 420px) {
@@ -1262,3 +1285,7 @@ a.chip { text-decoration: none; }
   .cmpgrid__row { grid-template-columns: 92px repeat(var(--n), minmax(0, 1fr)); }
   .est b { font-size: 1.25rem; }
 }
+
+/* the compare tray sits over the page, so give the page room to end above it */
+body.has-tray { padding-bottom: 96px; }
+body.has-tray .foot { margin-bottom: 8px; }
