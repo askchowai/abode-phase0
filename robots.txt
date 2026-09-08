@@ -1,0 +1,14 @@
+# Abode — a demonstration build on sample data.
+# The address pages are meant to be public and readable; the interactive
+# surfaces that depend on your own stored state are not worth crawling.
+
+User-agent: *
+Allow: /
+Disallow: /alerts.html
+Disallow: /messages.html
+Disallow: /saved.html
+Disallow: /compare.html
+Disallow: /moderation.html
+Disallow: /agent.html
+
+Sitemap: /sitemap.xml

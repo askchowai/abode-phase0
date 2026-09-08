@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About — Abode</title>
+<meta name="description" content="What Abode is, why every address keeps a permanent page, and what it would take to run this for real.">
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231c6b48'/%3E%3Cpath d='M16 8l9 8h-2.5v9h-13v-9H7z' fill='%23fff'/%3E%3C/svg%3E">
+</head>
+<body data-page="doc">
+
+<header class="masthead" data-chrome="head"></header>
+
+<main id="main" class="wrap">
+  <article class="doc">
+    <h1>About Abode</h1>
+    <p class="doc__lead">Every house has a page, a feed, and a memory.</p>
+
+    <h2>The idea</h2>
+    <p>Listing sites treat a house as a product that exists for the ninety days it is for sale. Then the
+      listing expires and everything anybody knew about the place disappears with it — the roof that was
+      replaced in 2016, the corner of the lot that floods every seventh spring, the renovation the last
+      owner documented in thirty-one posts.</p>
+    <p>Abode gives every address a permanent page instead. Search works the way you expect. Underneath it,
+      the house keeps its record: sales, permits, storms, price cuts, and what the owner, the last owner,
+      the tenant and the neighbours actually said. Follow an address the way you would follow a person.</p>
+
+    <h2>Why the badges matter</h2>
+    <p>A verified-owner badge is worth something only if it is hard to get. We match a claimant against the
+      recorded deed and confirm with a mailed code or a document a person reads. Agents verify a state
+      licence. Everyone else posts as a neighbour, and says so.</p>
+
+    <h2>What this build is</h2>
+    <p>This is a working front end running on sample data — eighteen addresses, their histories, their
+      walls and their offers. Search, the map, verification, offers, groups, messages, alerts and moderation
+      all work; they just run against records in the browser rather than an MLS feed and a database.
+      Nothing here is a real listing and no offer made here is a contract.</p>
+
+    <h2>What it would take to be real</h2>
+    <p>Three things run on other people’s timelines: MLS licensing through a RESO aggregator, a canonical
+      parcel identifier so an address keeps one page across decades and owners, and an owner-verification
+      pipeline with mail and document review. The rest is ordinary engineering.</p>
+
+    <p class="doc__note">Abode is committed to the letter and spirit of the Fair Housing Act. See
+      <a href="fair-housing.html">fair housing</a> and the <a href="content-policy.html">content policy</a>.</p>
+  </article>
+</main>
+
+<footer class="foot" data-chrome="foot"></footer>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

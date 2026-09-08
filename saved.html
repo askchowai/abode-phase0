@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Saved — Abode</title>
+<meta name="description" content="Your saved homes, followed addresses and streets, saved searches and the addresses you have asked us to open.">
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231c6b48'/%3E%3Cpath d='M16 8l9 8h-2.5v9h-13v-9H7z' fill='%23fff'/%3E%3C/svg%3E">
+</head>
+<body data-page="saved">
+
+<header class="masthead" data-chrome="head"></header>
+
+<main id="main" class="wrap">
+  <div class="results-head" style="padding-top:34px;padding-bottom:0"><h1>Your homes</h1></div>
+
+  <div id="owned-sec" hidden>
+    <div class="results-head" style="padding-top:34px">
+      <div><h2>Addresses you own</h2>
+      <p style="color:var(--ink-3);font-size:.9rem;margin:4px 0 0">Claimed and verified. Your posts on these carry the owner badge.</p></div>
+    </div>
+    <div class="grid" id="owned"></div>
+  </div>
+
+  <div id="requests-sec" hidden>
+    <div class="results-head" style="padding-top:34px">
+      <div><h2>Addresses you asked for</h2>
+      <p style="color:var(--ink-3);font-size:.9rem;margin:4px 0 0">Queued until the parcel data lands.</p></div>
+    </div>
+    <div id="requests"></div>
+  </div>
+
+  <div id="streets-sec" hidden>
+    <div class="results-head" style="padding-top:34px">
+      <div><h2>Streets you follow</h2>
+      <p style="color:var(--ink-3);font-size:.9rem;margin:4px 0 0">Everything that happens on these, not just one house.</p></div>
+    </div>
+    <div id="streets"></div>
+  </div>
+
+  <div id="searches-sec" hidden>
+    <div class="results-head" style="padding-top:34px">
+      <div><h2>Saved searches</h2>
+      <p style="color:var(--ink-3);font-size:.9rem;margin:4px 0 0">New and reduced homes matching these show up in your alerts.</p></div>
+    </div>
+    <div id="searches"></div>
+  </div>
+
+  <div class="results-head" style="padding-top:34px"><h2>Saved homes</h2></div>
+  <div class="grid" id="saved"></div>
+
+  <div class="results-head" style="padding-top:46px">
+    <div><h2>Addresses you follow</h2>
+    <p style="color:var(--ink-3);font-size:.9rem;margin:4px 0 0">You get every post, price change and offer on these.</p></div>
+  </div>
+  <div class="grid" id="followed"></div>
+  <section id="recent" class="sec--recent" style="padding-bottom:70px"></section>
+</main>
+
+<footer class="foot" data-chrome="foot"></footer>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

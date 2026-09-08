@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Address — Abode</title>
+<meta name="description" content="An address page on Abode — the listing, the price history, the wall, the offers and everything recorded about the house.">
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231c6b48'/%3E%3Cpath d='M16 8l9 8h-2.5v9h-13v-9H7z' fill='%23fff'/%3E%3C/svg%3E">
+</head>
+<body data-page="address">
+
+<header class="masthead" data-chrome="head"></header>
+
+<main id="main">
+  <section class="addr-hero">
+    <div class="addr-gallery" id="gallery"></div>
+    <div class="wrap"><div class="addr-bar" id="bar"></div></div>
+  </section>
+
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <div class="tabs">
+          <button data-tab="feed" class="is-active">Address feed</button>
+          <button data-tab="timeline">History</button>
+          <button data-tab="facts">Facts &amp; features</button>
+        </div>
+        <div id="tabbody"></div>
+      </div>
+      <aside id="rail"></aside>
+    </div>
+    <section id="nearby" class="sec--recent"></section>
+    <section id="recent" class="sec--recent"></section>
+  </div>
+</main>
+
+<footer class="foot" data-chrome="foot"></footer>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

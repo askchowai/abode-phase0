@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Abode — every house has a page, a feed, and a memory</title>
+<meta name="description" content="A real estate marketplace where every address is also a social profile: listings, owner updates, neighbor comments, permanent history, and offers.">
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231c6b48'/%3E%3Cpath d='M16 8l9 8h-2.5v9h-13v-9H7z' fill='%23fff'/%3E%3C/svg%3E">
+</head>
+<body data-page="home">
+
+<header class="masthead" data-chrome="head"></header>
+
+<main id="main">
+  <section class="hero">
+    <div class="wrap">
+      <h1>Every house has a page,<br>a feed, and a <em>memory</em>.</h1>
+      <p class="hero__sub">Search listings like you always have. Then read what the owner, the last owner, the tenant and the neighbors actually said about the place — going back decades.</p>
+      <div class="searchbar">
+        <input id="q" type="search" placeholder="Address, city, ZIP, or “adobe with a well”" aria-label="Search homes">
+        <button class="btn btn--primary" id="go">Search</button>
+      </div>
+      <p class="hero__alt"><a href="search.html?view=map">or search on the map →</a></p>
+      <div class="stats" id="stats"></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap">
+      <div class="sec__head">
+        <div>
+          <h2>On the market now</h2>
+          <p>Every card shows what people are saying, not just the square footage.</p>
+        </div>
+        <a class="link-more" href="search.html">See all listings →</a>
+      </div>
+      <div class="grid" id="featured"></div>
+    </div>
+  </section>
+
+  <section class="sec" style="background:var(--surface);border-block:1px solid var(--line)">
+    <div class="wrap">
+      <div class="sec__head"><div><h2>What makes an address page different</h2></div></div>
+      <div class="grid">
+        <div class="panel" style="margin:0">
+          <div class="panel__title">✓ Verified owners</div>
+          <p style="color:var(--ink-2);margin-top:8px">Match to the county deed, confirm by mailed code or title document, then post as the owner of record. The badge is worth something because it is hard to get.</p>
+        </div>
+        <div class="panel" style="margin:0">
+          <div class="panel__title">A permanent record</div>
+          <p style="color:var(--ink-2);margin-top:8px">Renovations, roof replacements, storm claims, price cuts, who built it and when. The listing expires. The history does not.</p>
+        </div>
+        <div class="panel" style="margin:0">
+          <div class="panel__title">Neighbors who were there</div>
+          <p style="color:var(--ink-2);margin-top:8px">The tenant who knows the furnace. The kid who grew up there and knows where the creek goes. Upvoted to the top, downvoted out of the way.</p>
+        </div>
+        <div class="panel" style="margin:0">
+          <div class="panel__title">Offers in the open</div>
+          <p style="color:var(--ink-2);margin-top:8px">Put a number and your terms in front of the owner directly. Non-binding until a licensed broker writes it up — but no more guessing what the house is really worth.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap">
+      <div class="cols" style="padding:0">
+        <div>
+          <div class="sec__head"><div><h2>Neighborhood groups</h2><p>The part that behaves like a town square, not a listing site.</p></div>
+            <a class="link-more" href="groups.html">All groups →</a></div>
+          <div class="panel" id="groups"></div>
+        </div>
+        <div class="panel panel--sticky">
+          <div class="panel__title">Claim your address</div>
+          <p class="panel__sub" style="margin-bottom:16px">Own the page for the house you live in. Post updates, answer questions, correct the record, and keep the history straight.</p>
+          <div style="display:grid;gap:9px">
+            <div><label class="lbl" for="claim">Your address</label><input class="field" id="claim" placeholder="418 Juniper Hollow Rd"></div>
+            <button class="btn btn--primary btn--wide" id="claim-start">Start verification</button>
+            <div id="claim-miss"></div>
+            <div class="notice">Verification takes about a week: we match your name against the county deed, then mail a code to the property.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="sec" style="background:var(--surface);border-block:1px solid var(--line)">
+    <div class="wrap">
+      <div class="sec__head"><div><h2>The rest of it</h2><p>Every surface here works — this is a running build, not a mockup.</p></div></div>
+      <div class="tiles">
+        <a class="tile" href="search.html?view=map"><b>Map search</b><span>Pins priced and coloured by status, drawn from the listing coordinates.</span></a>
+        <a class="tile" href="groups.html"><b>Neighborhood groups</b><span>Six town squares with their own walls, market stats and moderators.</span></a>
+        <a class="tile" href="feed.html"><b>Your feed</b><span>Activity ranked by the addresses you follow and the groups you joined.</span></a>
+        <a class="tile" href="alerts.html"><b>Alerts</b><span>Price cuts, status changes, offers and claim decisions, per-kind switches.</span></a>
+        <a class="tile" href="messages.html"><b>Messages</b><span>Direct threads with the owner or the agent of record.</span></a>
+        <a class="tile" href="saved.html"><b>Saved</b><span>Saved homes, followed addresses and saved searches with live match counts.</span></a>
+        <a class="tile" href="agent.html"><b>Agent desk</b><span>Verify a licence and see what is waiting on you at every listing.</span></a>
+        <a class="tile" href="compare.html"><b>Compare</b><span>Up to four homes side by side on the numbers that actually differ.</span></a>
+        <a class="tile" href="moderation.html"><b>Moderation queue</b><span>What a group moderator sees when a post is reported.</span></a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot" data-chrome="foot"></footer>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

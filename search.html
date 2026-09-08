@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Search homes — Abode</title>
+<meta name="description" content="Search homes by price, beds and status, on a list or a map you can pan, zoom and search by area.">
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231c6b48'/%3E%3Cpath d='M16 8l9 8h-2.5v9h-13v-9H7z' fill='%23fff'/%3E%3C/svg%3E">
+</head>
+<body data-page="search">
+
+<header class="masthead" data-chrome="head"></header>
+
+<main id="main" class="wrap">
+  <div class="filters">
+    <div class="f f--grow">
+      <label class="lbl" for="f-q">Search</label>
+      <input class="field" id="f-q" type="search" placeholder="City, ZIP, street, or a feature">
+    </div>
+    <div class="f"><label class="lbl" for="f-min">Min price</label><input class="field" id="f-min" type="number" placeholder="Any" step="25000"></div>
+    <div class="f"><label class="lbl" for="f-max">Max price</label><input class="field" id="f-max" type="number" placeholder="Any" step="25000"></div>
+    <div class="f"><label class="lbl" for="f-beds">Beds</label>
+      <select class="field" id="f-beds"><option value="0">Any</option><option value="2">2+</option><option value="3">3+</option><option value="4">4+</option><option value="5">5+</option></select></div>
+    <div class="f"><label class="lbl" for="f-status">Status</label>
+      <select class="field" id="f-status"><option value="any">Any</option><option value="active">For sale</option><option value="pending">Pending</option><option value="sold">Sold</option></select></div>
+    <div class="f"><label class="lbl" for="f-sort">Sort</label>
+      <select class="field" id="f-sort">
+        <option value="relevant">Most followed</option><option value="talked">Most discussed</option>
+        <option value="near">Closest to the map</option><option value="new">Newest</option><option value="low">Price: low to high</option><option value="high">Price: high to low</option>
+      </select></div>
+    <div class="f" style="min-width:auto"><button class="btn" id="f-clear">Clear</button></div>
+    <div class="f f--chips">
+      <span class="lbl">Only show</span>
+      <div class="chips">
+        <button class="chip" data-chip="open" aria-pressed="false">Open house</button>
+        <button class="chip" data-chip="cut" aria-pressed="false">Price cut</button>
+        <button class="chip" data-chip="owner" aria-pressed="false">Owner on site</button>
+        <button class="chip" data-chip="talk" aria-pressed="false">Active wall</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="results-head">
+    <h1 id="count">Loading…</h1>
+    <div class="results-head__side">
+      <p class="results-head__note">Sample data — no MLS feed connected</p>
+      <button class="btn btn--sm" id="f-save">★ Save this search</button>
+      <div class="viewtoggle" id="f-view" role="group" aria-label="Result layout">
+        <button data-view="list" type="button">List</button>
+        <button data-view="split" type="button" class="is-active">Split</button>
+        <button data-view="map" type="button">Map</button>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin:0 0 14px"><button class="linkish" id="afford-toggle" aria-expanded="false" aria-controls="afford">What can I afford?</button></p>
+  <div id="afford" hidden></div>
+
+  <div class="chips" id="recent-searches" style="margin-bottom:16px"></div>
+
+  <div class="searchview" id="view">
+    <div class="searchview__list"><div class="grid" id="results"></div></div>
+    <div class="searchview__map"><div class="mp" id="map"></div></div>
+  </div>
+</main>
+
+<footer class="foot" data-chrome="foot"></footer>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feed — Abode</title>
+<meta name="description" content="Everything that happened at the addresses you follow: posts, price cuts, open houses, status changes and accepted offers.">
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231c6b48'/%3E%3Cpath d='M16 8l9 8h-2.5v9h-13v-9H7z' fill='%23fff'/%3E%3C/svg%3E">
+</head>
+<body data-page="feed">
+
+<header class="masthead" data-chrome="head"></header>
+
+<main id="main" class="wrap">
+  <div class="feed-layout">
+    <nav class="side-nav">
+      <a href="feed.html" class="is-active">🏘 All activity</a>
+      <a href="search.html">🔍 Search homes</a>
+      <a href="saved.html">★ Saved</a>
+      <div class="side-nav__label">Addresses you follow</div>
+      <div id="following" style="display:grid;gap:2px"></div>
+    </nav>
+
+    <div>
+      <div class="results-head" style="padding-top:0">
+        <h1>Activity near you</h1>
+        <p style="color:var(--ink-3);font-size:.88rem;margin:0">Ranked by the addresses you follow</p>
+      </div>
+      <div class="chips" id="feed-kinds" style="margin-bottom:16px"></div>
+      <div id="feed"></div>
+      <button class="btn btn--wide" id="feed-more" hidden>Show more</button>
+    </div>
+
+    <aside>
+      <div class="panel">
+        <div class="panel__title">Neighborhood groups</div>
+        <div class="panel__sub">Join the ones you actually live in</div>
+        <div id="groups-rail"></div>
+        <p style="margin:14px 0 0"><a class="linkish" href="groups.html">See all groups →</a></p>
+      </div>
+      <div class="panel panel--sticky">
+        <div class="panel__title">Price alerts</div>
+        <div class="panel__sub" style="margin-bottom:14px">Get a text when anything you follow changes price or status.</div>
+        <label class="lbl" for="feed-phone">Mobile number</label>
+        <input class="field" id="feed-phone" placeholder="Phone number" style="margin-bottom:9px">
+        <button class="btn btn--primary btn--wide" id="feed-alerts">Turn on alerts</button>
+        <div id="feed-alert-note" class="notice" style="margin-top:12px">Manage everything on the <a href="alerts.html">alerts page</a>.</div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<footer class="foot" data-chrome="foot"></footer>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

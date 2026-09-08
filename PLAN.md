@@ -1,0 +1,238 @@
+# Abode — Phased Build Plan
+
+**Product:** a premium real-estate marketplace where every address is also a
+social profile. Full listing search like Zillow, plus a permanent, public
+history per address: posts, photos, comments, upvotes/downvotes, verified-owner
+updates, follows, neighborhood groups, and offers/bids.
+
+**One-line pitch:** every house has a page, a feed, and a memory.
+
+---
+
+## Phase 0 — Foundation (this repo)
+
+Goal: a working, clickable product you can open in a browser with no build step
+and no install. Everything real except the data source.
+
+- Design system: type scale, color, spacing, components (`assets/css/styles.css`)
+- Mock data layer standing in for MLS (`assets/js/data.js`) — 24 listings,
+  address histories, owners, posts, comments, votes, offers. Deliberately
+  clustered: four addresses in one Asheville neighborhood, three in Boston-Edison,
+  two on College Hill, so nearest-neighbour comparables and metro-level map zoom
+  are exercised by the data rather than assumed
+- Client store with `localStorage` persistence so votes/comments/follows/offers
+  survive a refresh (`assets/js/app.js`)
+- Pages: home, search, address profile, neighborhood feed, saved/profile
+- Fair Housing and safety screening on every post and reply, with the rule and a
+  compliant rewrite shown rather than a silent block; report flow with reasons,
+  triage state and no reporter identity exposed to the author
+- Alerts: notifications derived from what you follow, own and joined — price
+  cuts, status changes, posts, offers, group threads, claim decisions — with
+  read state, an unread count in the masthead, per-kind switches and push /
+  email / SMS channel preferences
+- Ownership claim flow: surname match against the recorded deed name, four proof
+  routes, pending/verified/withdrawn states, and the powers the badge carries —
+  owner-badged posts, pin and unpin, report for review. Approval is stubbed; the
+  states and the transitions are the part phase 3 has to honour
+- Dark theme: every colour is a token, the dark values are chosen for contrast on
+  the dark surface and checked for colour-blind separation, follows the system
+  preference until you override it
+- Accessibility: one h1 per page, named controls, labelled fields, heading order,
+  skip link, focus trapped in modals and returned on close — audited on every run
+- Saved searches: the filter set stored, named from its own filters, restored
+  through the URL, and matched against the same predicate the search page runs
+- Open houses: scheduled by whoever has standing at the address, RSVP counts,
+  flagged on search cards, pushed to followers, listed on the agent desk
+- An affordability calculator that works backwards from income and debts to a
+  ceiling and can drive the search, a value estimate given as a range with its
+  working shown, and private notes on any address
+- Announcements for screen readers on toasts and the result count, recent searches
+  kept for one tap, and an address page that says what changed since you last looked
+- Group events with a going count
+- Metadata a crawler can read: a description and Open Graph tags on every page,
+  schema.org structured data on address pages that matches the record and says out
+  loud it is sample data, a generated sitemap and a robots file
+- Photographs on wall posts, resized in the browser
+- An address we do not hold can be requested rather than shrugged at, and the
+  request says what would have to happen — parcel lookup, deed pull, MLS check
+- Print an address record, and mark an alert read or unread one at a time
+- Badge tiers that mean different things: owner, resident and past owner, each
+  with its own proof and its own powers — only the owner can pin, answer an offer
+  or ask for a review
+- Follow a street, not just an address, and see what your digest would actually
+  say before you turn it on
+- A work log: owners and agents of record add dated work to the address record —
+  cost, contractor, permit — merged into the timeline in date order and marked as
+  owner-contributed, with county and MLS rows never edited
+- The feed marks where you left off, and j/k walk the results
+- Post kinds on every wall — question, update, work done, observation — with an
+  unanswered question feeding the agent desk, where it can be answered in place
+- A verified owner can ask for review of a post about their address; the queue
+  shows that the owner asked, and the author is told a review was requested but
+  not by whom
+- A hardening pass: the mock feed is now held to MLS standards by a test (unique
+  keys, coordinates inside the state they claim, price per foot that matches the
+  arithmetic, every reference resolving), colour contrast is computed for both
+  themes rather than eyeballed, and every page has a render and byte budget
+- Sort results by distance from wherever the map is looking
+- Map clustering: homes closer than a thumb become one counted marker that zooms
+  to its contents when clicked, and lights up when you hover the card
+- Private tour requests routed to the agent of record and shown on their desk
+- Take your data or delete it: a full export of everything the build holds about
+  you, and a one-confirmation wipe
+- The feed carries activity, not only posts — price cuts, open houses, status
+  changes and accepted offers, filterable by kind
+- A market trend on group pages, drawn only where the group holds enough homes
+  to mean anything, and saying so when it does not
+- Mute an address without unfollowing it, and a "more in this neighborhood" strip
+  on every address that belongs to a group
+- Hazard on the address page where a record exists — flood zone, wildfire
+  interface, wind, heat — sourced and caveated, and honestly blank where it does not
+- Empty search results diagnose themselves and offer the one filter to drop
+- A search is a URL: every filter, chip and layout round-trips through the address
+  bar, so a search can be shared or bookmarked
+- Offers negotiate both ways — counter, split the difference, withdraw — with the
+  exchange kept in public on the page
+- A first-run banner that says plainly this is a demonstration on sample data
+- Dead-link audit in the test suite, and a real explanation on every not-found
+  page instead of a blank
+- Delivery rules for alerts — instant, daily or weekly, with quiet hours — and
+  keyboard shortcuts: slash to search, g-then-key to navigate, ? for the list
+- Written policy: fair housing, content policy and about, linked from the footer
+  and cited by the screen when it blocks a post
+- Moderator queue: reported posts with the rule and without the reporter, three
+  decisions on the record, removal shown as a removal, one appeal to someone else
+- Off-market addresses: two houses that sold and kept their page, which is the
+  whole thesis stated in data rather than in copy
+- Group directory and person profiles: every group in one searchable page, and a
+  page per person collecting everything they said, with what they own, represent
+  and moderate
+- Search chips for open house, price cut, owner posting on the wall and an active
+  wall; the feed pages rather than truncating
+- Compare tray and comparison table, recently-viewed addresses, share a link, and
+  a print stylesheet that gives you the address page on paper without the chrome
+- Cost to own: proper amortisation with PMI, tax, insurance and HOA, inputs kept
+  between listings
+- Comparables by great-circle distance from the parcel coordinates, and a
+  full-screen photo viewer with keyboard navigation
+- Address record export: the full record as JSON from any address page, in the
+  shape the phase 7 public API would return
+- Agent tools: licence verification, agent-of-record on the addresses you mark,
+  and a desk that answers the only morning question an agent has — where do I owe
+  somebody a reply
+- Owner analytics: a private panel on an address you have verified — weekly views,
+  week-on-week movement, follows, saves, live offers and open threads
+- Offer responses: a verified owner accepts, counters or declines in public, the
+  buyer is alerted, and the panel keeps saying that none of it is a contract
+- Direct messages: threads with the owner or the agent of record, started from the
+  address page, screened by the same fair-housing layer, unread counts in the nav
+- Account surface: passwordless sign-in by email or phone code, display name on
+  everything you post, sign-out. No session and no server behind it yet
+- Price history chart on every address with more than one recorded figure —
+  a step line, because price holds flat between recorded events
+- Neighborhood groups: group page with a shared wall (the same thread component
+  as the address page, so votes and replies live in one store), market snapshot,
+  moderators, group map, and the member homes that have a page
+- Map search: pan and zoom by mouse, touch or keyboard, and "search this area"
+  against the visible rectangle;
+  Mercator projection fitted to the live result set until you move it, graticule, scale
+  bar, status-coloured price pins with label collision avoidance, pin preview
+  cards, and card-to-pin cross-highlighting. Drawn from coordinates in the data
+  layer, so phase 1 swaps the source and the map keeps working. Locator map on
+  every address page.
+
+**Done when:** you can search, open an address, follow it, vote a comment,
+post to its wall, and place an offer — and it all persists.
+
+## Phase 1 — Real data ingestion
+
+- MLS access. This is the expensive, slow, legal part. Two routes:
+  1. **RESO Web API** feeds via an aggregator (Bridge Interactive, Trestle/CoreLogic,
+     MLS Grid). Per-MLS licensing, IDX display rules, attribution requirements.
+  2. Public-record + assessor data (ATTOM, Regrid, county scrapes) for the
+     address *spine*, with listings layered on where licensed.
+- Canonical address IDs. Normalize to a single key (Regrid/ATTOM parcel ID or
+  USPS-normalized address) so a house keeps one profile across listings, sales,
+  and decades. **This is the core asset of the product.**
+- Nightly delta sync, soft-delete on listing expiry, never delete social history.
+
+## Phase 2 — Backend & accounts
+
+- Postgres (Supabase or RDS) + PostGIS for radius/polygon search
+- Tables: `parcels`, `listings`, `listing_media`, `users`, `follows`, `posts`,
+  `comments`, `votes`, `offers`, `groups`, `messages`, `alerts`
+- Auth: email + phone OTP, OAuth. Roles: guest, resident, verified owner, agent, admin
+  (the phase 0 sign-in already models the OTP flow and the display-name rule; it
+  needs a real code sender, rate limiting, and session tokens)
+- Search: Postgres full-text + PostGIS to start; Elastic/Typesense when it hurts
+- Map: bounds/viewport queries against PostGIS, server-side clustering above a
+  few hundred pins, tiles from MapLibre + a vector basemap (Protomaps or MapTiler)
+
+## Phase 3 — Owner verification (trust layer)
+
+The whole product hinges on "verified owner" meaning something.
+
+- Match claimant to county deed/assessor name, then confirm with one of:
+  mailed postcard code, utility bill upload, title-doc upload, or ID + name match
+  (the phase 0 flow already models all four; what is missing is the mail vendor,
+  the document reviewer queue, and the assessor-name source of truth)
+- Badge tiers: Verified Owner, Past Owner, Resident, Agent of Record — all four
+  exist in phase 0 with different proof requirements and different powers
+- Owner controls: pin a post, respond to comments, request review of defamatory
+  content, opt the address out of certain UGC surfaces
+
+## Phase 4 — Social graph & feed
+
+- Follow an address, a street, a neighborhood, a person
+- Ranked feed: followed addresses → neighborhood → nearby market activity
+- Post types: update, photo, renovation log, price change, open house, question
+  (four of these ship in phase 0; photo and the automatic price-change post need
+  uploads and the feed writer respectively)
+- Voting with sane rules: one vote per user per item, no vote on your own,
+  decay-weighted sort, rate limits
+- Notifications: push/email/SMS on new post, price cut, status change, offer.
+  The phase 0 alert centre already models the event kinds, the read state and the
+  channel preferences; what is missing is the sender (APNs/FCM, Postmark, Twilio),
+  quiet hours, digesting, and the unsubscribe/STOP handling that makes SMS legal
+
+## Phase 5 — Offers & transactions
+
+Highest legal exposure. Do not ship casually.
+
+- Start with **non-binding interest**: "Offer to discuss" — price, terms, proof
+  of funds attachment, routed to owner or listing agent. Phase 0 has both sides of
+  this: writing one, and the owner answering it
+- Binding offers require licensed-brokerage involvement, state-specific forms,
+  and e-sign (Dropbox Sign / DocuSign). Partner with a brokerage rather than
+  becoming one on day one
+- Escrow/earnest money → never touch funds directly; hand off to a title partner
+
+## Phase 6 — Moderation, safety, compliance
+
+- Fair Housing (FHA) filters on all UGC — steering language, protected-class
+  mentions. This is not optional; it is how the site gets sued. Phase 0 ships the
+  explainable regex layer; production needs a classifier, per-state source-of-income
+  rules, an audit log of every block, and counsel reviewing the rule list
+- Anti-doxxing rules: no occupant names, schedules, or "who lives here" content
+- Report → triage → takedown pipeline with owner appeal (the report side and its
+  states exist in phase 0; the moderator queue and the appeal do not)
+- IDX display compliance, MLS attribution, delisting SLAs (often 24h)
+- Section 230 posture, DMCA agent, retention policy on removed content
+
+## Phase 7 — Growth & polish
+
+- Neighborhood groups, direct messaging, price-drop alerts (all three have phase 0
+  front ends; what they need is delivery, presence and abuse-rate limiting)
+- Agent tools, paid placement, premium owner analytics (the owner panel exists in
+  phase 0 on derived numbers; it needs real view counters and abuse-proof metrics)
+- Mobile app (the Neighbors-app behavior wants push notifications)
+- Public API for address history (the record shape and the export exist already;
+  what is missing is the endpoint, auth, rate limits and attribution terms)
+
+---
+
+## Sequencing note
+
+Phases 0–2 are ordinary engineering. Phase 1 (MLS licensing) and Phase 3
+(owner verification) are the real gating items and should start in parallel with
+Phase 0 because they run on other people's timelines, not yours.
